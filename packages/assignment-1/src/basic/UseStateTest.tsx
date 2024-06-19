@@ -4,6 +4,7 @@ import { useState } from "react";
 export default function UseStateTest() {
     const [state, setState] = useState({ bar: { count: 1 } });
 
+    //이전 state값을 가져와서 새로운값으로 업데이트
     const increment = () => {
         setState((prev) => ({
             ...prev,

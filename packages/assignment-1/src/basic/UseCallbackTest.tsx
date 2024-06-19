@@ -1,17 +1,16 @@
-import React, { useState, useCallback } from "react";
-
-const MeowButton = React.memo(({ onClick }) => <button onClick={onClick}>Meow</button>);
-const BarkButton = React.memo(({ onClick }) => <button onClick={onClick}>Bark</button>);
+import { useState, useCallback } from "react";
+import { MeowButton, BarkButton } from "./UseCallbackTest.components.tsx";
 
 function UseCallbackTest() {
     const [meowCount, setMeowCount] = useState(0);
     const [barkedCount, setBarkedCount] = useState(0);
 
-    const incrementMeowCount = useCallback(() => {
+    //컴포넌트 첫 mount시 1회만 생성
+    const handleMewCnt = useCallback(() => {
         setMeowCount((n) => n + 1);
     }, []);
 
-    const incrementBarkedCount = useCallback(() => {
+    const handleBarkCnt = useCallback(() => {
         setBarkedCount((n) => n + 1);
     }, []);
 
@@ -19,8 +18,8 @@ function UseCallbackTest() {
         <div>
             <p data-testid="cat">meowCount {meowCount}</p>
             <p data-testid="dog">barkedCount {barkedCount}</p>
-            <MeowButton onClick={incrementMeowCount} />
-            <BarkButton onClick={incrementBarkedCount} />
+            <MeowButton onClick={handleMewCnt} />
+            <BarkButton onClick={handleBarkCnt} />
         </div>
     );
 }
