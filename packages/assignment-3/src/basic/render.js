@@ -3,6 +3,7 @@ export function jsx(type, props, ...children) {
         type,
         props: {
             ...props,
+            //문자 렌더링을 위해 children 길이 확인
             children: children.length === 1 ? children[0] : children,
         },
     };
@@ -10,7 +11,7 @@ export function jsx(type, props, ...children) {
 
 // createElement 함수 구현
 export function createElement(node) {
-    // // 문자열 노드 > 텍스트 노드
+    // 문자열  > 텍스트 노드
     if (typeof node === "string") {
         return document.createTextNode(node);
     }
@@ -21,14 +22,13 @@ export function createElement(node) {
 
     // props가 있으면 처리
     if (props) {
-        // 속성들을 DOM 요소에 추가
         Object.keys(props).forEach((name) => {
             if (name !== "children") {
                 element.setAttribute(name, props[name]);
             }
         });
 
-        // children을 배열로 설정하여 텍스트를 생성
+        // 문자배열로 텍스트 생성
         const children = Array.isArray(props.children) ? props.children : [props.children];
         children.forEach((child) => element.appendChild(createElement(child)));
     }
