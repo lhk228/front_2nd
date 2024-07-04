@@ -1,24 +1,58 @@
 export function createHooks(callback) {
-    let state = null; // 전역 상태 변수
-    const useState = (initState) => {
-        console.log("callback 1:", initState);
-        state = initState;
+    const state = [];
+    let stateIdx = 0;
 
+    const useState = (initState) => {
+        const idx = stateIdx;
+        stateIdx++;
+
+        //초기값이 없을경우 초기값 설정
+        if (!state[idx]) {
+            state[idx] = initState;
+        }
+
+        //같은값일경우 return, 새로운값이면 업데이트
         const setState = (newState) => {
-            state = newState;
-            console.log("callback 22222:", newState);
-            const result = callback(); // 상태가 업데이트될 때마다 콜백 실행
-            console.log("resul :", result);
+            if (state[idx] === newState) return;
+            state[idx] = newState;
+            resetContext();
+            callback();
         };
 
-        return [state, setState];
+        return [state[idx], setState];
     };
 
-    const useMemo = (fn, refs) => {
-        return fn();
+    const memo = [];
+    let memoIdx = 0;
+
+    const useMemo = (fn, deps) => {
+        const target = memoIdx;
+        memoIdx++;
+
+        //저장된 값 확인
+        const memoized = memo[target];
+        const depsChanged = !memoized || !depsEqual(memoized.deps, deps);
+
+        if (depsChanged) {
+            const value = fn();
+            memo[target] = { value, deps };
+            return value;
+        }
+
+        return memoized.value;
     };
 
-    const resetContext = () => {};
+    //deps 비교
+    const depsEqual = (prevDeps, nextDeps) => {
+        if (prevDeps === nextDeps) return true;
+        if (prevDeps.length !== nextDeps.length) return false;
+        return prevDeps.every((dep, i) => dep === nextDeps[i]);
+    };
+
+    const resetContext = () => {
+        stateIdx = 0;
+        memoIdx = 0;
+    };
 
     return { useState, useMemo, resetContext };
 }
