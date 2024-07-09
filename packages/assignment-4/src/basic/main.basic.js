@@ -5,7 +5,7 @@ const products = [
 ];
 
 //전역 핸들링 elements
-const { el_Cart, el_Total, el_Box, el_SelectBox, el_AddButton } = createCartBaseElements();
+const { $cart, $cartTotal, $selectBox, $addButton } = createCartBaseElements();
 
 //장바구니 기본요소 생성
 function createCartBaseElements() {
@@ -25,76 +25,76 @@ function createCartBaseElements() {
 
     container.innerHTML = htmlContent;
 
-    const el_Cart = container.querySelector("#cart-items");
-    const el_Total = container.querySelector("#cart-total");
-    const el_SelectBox = container.querySelector("#product-select");
-    const el_AddButton = container.querySelector("#add-to-cart");
+    const $cart = container.querySelector("#cart-items");
+    const $cartTotal = container.querySelector("#cart-total");
+    const $selectBox = container.querySelector("#product-select");
+    const $addButton = container.querySelector("#add-to-cart");
 
-    return { el_Cart, el_Total, el_SelectBox, el_AddButton };
+    return { $cart, $cartTotal, $selectBox, $addButton };
 }
 
 //장바구니 내 버튼 생성
 const createButtonElement = (className, text, id, changeFunc) => {
-    const button = document.createElement("button");
-    button.className = className;
-    button.textContent = text;
-    button.dataset.productId = id;
-    button.dataset.change = changeFunc;
-    return button;
+    const $button = document.createElement("button");
+    $button.className = className;
+    $button.textContent = text;
+    $button.dataset.productId = id;
+    $button.dataset.change = changeFunc;
+    return $button;
 };
 
 //장바구니 목록 생성
 function createCartItemElements(item) {
     const { name, id, price } = item;
 
-    const el_itemContainer = document.createElement("div");
-    el_itemContainer.id = id;
-    el_itemContainer.className = "flex justify-between items-center";
+    const $itemContainer = document.createElement("div");
+    $itemContainer.id = id;
+    $itemContainer.className = "flex justify-between items-center";
 
-    const el_itemInfo = document.createElement("span");
+    const $itemInfo = document.createElement("span");
 
-    el_itemInfo.textContent = `${name} - ${price}원 x 1`;
+    $itemInfo.textContent = `${name} - ${price}원 x 1`;
 
-    const el_buttonWrap = document.createElement("div");
+    const $buttonWrap = document.createElement("div");
 
-    const el_minusButton = createButtonElement(
+    const $btn_minus = createButtonElement(
         "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1",
         "-",
         id,
         "-1"
     );
 
-    const el_plusButton = createButtonElement(
+    const $btn_plus = createButtonElement(
         "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1",
         "+",
         id,
         "1"
     );
 
-    const el_removeButton = createButtonElement(
+    const $btn_remove = createButtonElement(
         "remove-item bg-red-500 text-white px-2 py-1 rounded",
         "삭제",
         id,
         "remove"
     );
 
-    el_buttonWrap.appendChild(el_minusButton);
-    el_buttonWrap.appendChild(el_plusButton);
-    el_buttonWrap.appendChild(el_removeButton);
+    $buttonWrap.appendChild($btn_minus);
+    $buttonWrap.appendChild($btn_plus);
+    $buttonWrap.appendChild($btn_remove);
 
-    el_itemContainer.appendChild(el_itemInfo);
-    el_itemContainer.appendChild(el_buttonWrap);
+    $itemContainer.appendChild($itemInfo);
+    $itemContainer.appendChild($buttonWrap);
 
-    el_Cart.appendChild(el_itemContainer);
+    $cart.appendChild($itemContainer);
 }
 
 //상품 옵션 생성
-function createProductOptions(el_SelectBox) {
+function createProductOptions($selectBox) {
     for (var i = 0; i < products.length; i++) {
-        var elOption = document.createElement("option");
-        elOption.value = products[i].id;
-        elOption.textContent = products[i].name + " - " + products[i].price + "원";
-        el_SelectBox.appendChild(elOption);
+        var $option = document.createElement("option");
+        $option.value = products[i].id;
+        $option.textContent = products[i].name + " - " + products[i].price + "원";
+        $selectBox.appendChild($option);
     }
 }
 
@@ -126,22 +126,22 @@ function calculateAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOri
 
 //최종 계산결과 표시
 function displayCartResult(discountRate, price) {
-    el_Total.textContent = "총액: " + Math.round(price) + "원";
+    $cartTotal.textContent = "총액: " + Math.round(price) + "원";
 
     if (discountRate > 0) {
         var dspan = document.createElement("span");
         dspan.className = "text-green-500 ml-2";
         dspan.textContent = "(" + (discountRate * 100).toFixed(1) + "% 할인 적용)";
-        el_Total.appendChild(dspan);
+        $cartTotal.appendChild(dspan);
     }
 }
 
 //장바구니 상품별 계산
-function calculateCartItemDetails(el_CartItems) {
+function calculateCartItemDetails($cartItems) {
     let totalQuantity = 0;
     let totalOriginalPrice = 0;
     let totalDiscountedPrice = 0;
-    Array.from(el_CartItems).forEach((item) => {
+    Array.from($cartItems).forEach((item) => {
         const target = products.find((product) => product.id === item.id);
         const itemType = target.id;
 
@@ -161,10 +161,10 @@ function calculateCartItemDetails(el_CartItems) {
 
 //장바구니 업데이트
 function updateCart() {
-    const el_CartItems = el_Cart.children;
+    const $cartItems = $cart.children;
 
     //장바구니 상품 계산
-    const { totalQuantity, totalDiscountedPrice, totalOriginalPrice } = calculateCartItemDetails(el_CartItems);
+    const { totalQuantity, totalDiscountedPrice, totalOriginalPrice } = calculateCartItemDetails($cartItems);
 
     //추가할인 계산
     let { discountRate, finalPrice } = calculateAdditionalDiscount(
@@ -186,7 +186,7 @@ function displayItemQuantity(targetElement, targetProduct) {
 
 //장바구니에 상품 추가
 function addCartItem() {
-    var selectedValue = el_SelectBox.value;
+    var selectedValue = $selectBox.value;
     var targetProduct = products.find((product) => product.id === selectedValue);
 
     if (targetProduct) {
@@ -197,10 +197,10 @@ function addCartItem() {
 }
 
 //담긴상품정보 추출
-function getCartItemStatus(targetText) {
+function getItemDataByText(targetText) {
     const itemInfo = targetText[0];
-    const itemQuantity = parseInt(targetText[1]);
-    return { itemInfo, itemQuantity };
+    const currentQuantity = parseInt(targetText[1]);
+    return { itemInfo, currentQuantity };
 }
 
 //장바구니 상품 관리
@@ -212,34 +212,34 @@ function manageCartItem(event) {
     if (!isChangeButton && !isRemoveButton) return;
 
     const productId = target.dataset.productId;
-    const el_targetItem = document.getElementById(productId);
-
-    const targetText = el_targetItem.querySelector("span").textContent.split("x ");
-    const { itemInfo, itemQuantity } = getCartItemStatus(targetText);
+    const $targetItem = document.getElementById(productId);
 
     if (isChangeButton) {
         const quantityChange = parseInt(target.dataset.change);
-        let quantity = itemQuantity + quantityChange;
+        const targetText = $targetItem.querySelector("span").textContent.split("x ");
+        const { itemInfo, currentQuantity } = getItemDataByText(targetText);
 
-        quantity <= 0
-            ? el_targetItem.remove()
-            : (el_targetItem.querySelector("span").textContent = `${itemInfo}x ${quantity}`);
+        let itemQuantity = currentQuantity + quantityChange;
+
+        itemQuantity <= 0
+            ? $targetItem.remove()
+            : ($targetItem.querySelector("span").textContent = `${itemInfo}x ${itemQuantity}`);
     }
 
-    isRemoveButton && el_targetItem.remove();
+    isRemoveButton && $targetItem.remove();
 
     updateCart();
 }
 
 function main() {
     //상품 목록 Option 생성
-    createProductOptions(el_SelectBox);
+    createProductOptions($selectBox);
 
     //추가버튼 클릭
-    el_AddButton.addEventListener("click", addCartItem);
+    $addButton.addEventListener("click", addCartItem);
 
     //추가된 상품목록 내 버튼 클릭
-    el_Cart.addEventListener("click", manageCartItem);
+    $cart.addEventListener("click", manageCartItem);
 }
 
 main();
