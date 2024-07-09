@@ -5,42 +5,32 @@ const products = [
 ];
 
 //전역 핸들링 elements
-const { container, el_Cart, el_Total, el_Box, el_Wrap, el_Title, el_SelectBox, el_AddButton } =
-    createCartBaseElements();
+const { container, el_Cart, el_Total, el_Box, el_SelectBox, el_AddButton } = createCartBaseElements();
 
 //장바구니 기본요소 생성
 function createCartBaseElements() {
-    var container = document.getElementById("app");
-    var el_Cart = document.createElement("div");
-    var el_Total = document.createElement("div");
-    var el_Box = document.createElement("div");
-    var el_Wrap = document.createElement("div");
-    var el_Title = document.createElement("h1");
-    var el_SelectBox = document.createElement("select");
-    var el_AddButton = document.createElement("button");
+    const container = document.getElementById("app");
 
-    el_Cart.id = "cart-items";
-    el_Total.id = "cart-total";
-    el_Box.className = "max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8";
-    el_Total.className = "text-xl font-bold my-4";
-    el_Wrap.className = "bg-gray-100 p-8";
-    el_Title.className = "text-2xl font-bold el_minusButton-4";
-    el_Title.textContent = "장바구니";
-    el_SelectBox.id = "product-select";
-    el_AddButton.id = "add-to-cart";
-    el_SelectBox.className = "border rounded p-2 mr-2";
-    el_AddButton.className = "bg-blue-500 text-white px-4 py-2 rounded";
-    el_AddButton.textContent = "추가";
+    const htmlContent = `
+        <div class="bg-gray-100 p-8">
+            <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
+                <h1 class="text-2xl font-bold my-4">장바구니</h1>
+                <div id="cart-items"></div>
+                <div id="cart-total" class="text-xl font-bold my-4"></div>
+                <select id="product-select" class="border rounded p-2 mr-2"></select>
+                <button id="add-to-cart" class="bg-blue-500 text-white px-4 py-2 rounded">추가</button>
+            </div>
+        </div>
+    `;
 
-    el_Box.appendChild(el_Title);
-    el_Box.appendChild(el_Cart);
-    el_Box.appendChild(el_Total);
-    el_Box.appendChild(el_SelectBox);
-    el_Box.appendChild(el_AddButton);
-    el_Wrap.appendChild(el_Box);
-    container.appendChild(el_Wrap);
+    container.innerHTML = htmlContent;
 
-    return { container, el_Cart, el_Total, el_Box, el_Wrap, el_Title, el_SelectBox, el_AddButton };
+    const el_Cart = container.querySelector("#cart-items");
+    const el_Total = container.querySelector("#cart-total");
+    const el_SelectBox = container.querySelector("#product-select");
+    const el_AddButton = container.querySelector("#add-to-cart");
+
+    return { container, el_Cart, el_Total, el_SelectBox, el_AddButton };
 }
 
 //장바구니 내 버튼 생성
