@@ -5,7 +5,7 @@ const products = [
 ];
 
 //전역 핸들링 elements
-const { container, el_Cart, el_Total, el_Box, el_SelectBox, el_AddButton } = createCartBaseElements();
+const { el_Cart, el_Total, el_Box, el_SelectBox, el_AddButton } = createCartBaseElements();
 
 //장바구니 기본요소 생성
 function createCartBaseElements() {
@@ -30,16 +30,16 @@ function createCartBaseElements() {
     const el_SelectBox = container.querySelector("#product-select");
     const el_AddButton = container.querySelector("#add-to-cart");
 
-    return { container, el_Cart, el_Total, el_SelectBox, el_AddButton };
+    return { el_Cart, el_Total, el_SelectBox, el_AddButton };
 }
 
 //장바구니 내 버튼 생성
-const createButtonElement = (className, textContent, datasetProductId, datasetChange) => {
+const createButtonElement = (className, text, id, changeFunc) => {
     const button = document.createElement("button");
     button.className = className;
-    button.textContent = textContent;
-    button.dataset.productId = datasetProductId;
-    button.dataset.change = datasetChange;
+    button.textContent = text;
+    button.dataset.productId = id;
+    button.dataset.change = changeFunc;
     return button;
 };
 
@@ -99,42 +99,29 @@ function createProductOptions(el_SelectBox) {
 }
 
 //할인율 계산
-function calculateDiscountRate(quantity, itemType) {
-    let discountRate = 0;
-    if (quantity >= 10) {
-        switch (itemType) {
-            case "p1":
-                discountRate = 0.1;
-                break;
-            case "p2":
-                discountRate = 0.15;
-                break;
-            case "p3":
-                discountRate = 0.2;
-                break;
-        }
+function calculateDiscountRate(itemType) {
+    switch (itemType) {
+        case "p1":
+            return 0.1;
+        case "p2":
+            return 0.15;
+        case "p3":
+            return 0.2;
     }
-    return discountRate;
 }
 
 //추가 할인 계산
-function calculateAdditionalDiscount(totalQuantity, price, totalOriginalPrice) {
-    let discountRate = 0;
-    if (totalQuantity >= 30) {
-        var bulkDiscount = price * 0.25; //통합 할인적용 가격
-        var individualDiscount = totalOriginalPrice - price; //개별 할인 적용가격
+function calculateAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOriginalPrice) {
+    let discountRate = (totalOriginalPrice - totalDiscountPrice) / totalOriginalPrice;
+    let finalPrice = totalDiscountPrice;
 
-        if (bulkDiscount > individualDiscount) {
-            price = totalOriginalPrice * 0.75;
-            discountRate = 0.25;
-        } else {
-            discountRate = (totalOriginalPrice - price) / totalOriginalPrice;
-        }
-    } else {
-        discountRate = (totalOriginalPrice - price) / totalOriginalPrice;
+    // 30개 이상일 경우 높은 할인율 적용
+    if (totalQuantity >= 30) {
+        finalPrice = totalOriginalPrice * 0.75;
+        discountRate = 0.25;
     }
 
-    return { discountRate, price };
+    return { discountRate, finalPrice };
 }
 
 //최종 계산결과 표시
@@ -164,10 +151,11 @@ function calculateCartItemDetails(el_CartItems) {
         totalQuantity += quantity;
         totalOriginalPrice += calPrice;
 
-        const discountRate = calculateDiscountRate(quantity, itemType);
+        const discountRate = quantity >= 10 ? calculateDiscountRate(itemType) : 0;
 
         totalDiscountedPrice += calPrice * (1 - discountRate);
     });
+
     return { totalQuantity, totalDiscountedPrice, totalOriginalPrice };
 }
 
@@ -179,10 +167,14 @@ function updateCart() {
     const { totalQuantity, totalDiscountedPrice, totalOriginalPrice } = calculateCartItemDetails(el_CartItems);
 
     //추가할인 계산
-    let { discountRate, price } = calculateAdditionalDiscount(totalQuantity, totalDiscountedPrice, totalOriginalPrice);
+    let { discountRate, finalPrice } = calculateAdditionalDiscount(
+        totalQuantity,
+        totalDiscountedPrice,
+        totalOriginalPrice
+    );
 
     //최종 계산결과 표시
-    displayCartResult(discountRate, price);
+    displayCartResult(discountRate, finalPrice);
 }
 
 //상품 수량 표시
