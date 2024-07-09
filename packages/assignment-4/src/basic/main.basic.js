@@ -92,6 +92,7 @@ const createButtonElement = (className, text, id, changeFunc) => {
 function createProductOptions($selectBox) {
     for (var i = 0; i < products.length; i++) {
         var $option = document.createElement("option");
+
         $option.value = products[i].id;
         $option.textContent = products[i].name + " - " + products[i].price + "원";
         $selectBox.appendChild($option);
