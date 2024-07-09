@@ -42,34 +42,58 @@ function createCartElements() {
     return { container, el_Cart, el_Total, el_Box, el_Wrap, el_Title, el_SelectBox, el_AddButton };
 }
 
-//장바구니 상품목록 생성
+//장바구니 내 버튼 생성
+const createButtonElement = (className, textContent, datasetProductId, datasetChange) => {
+    const button = document.createElement("button");
+    button.className = className;
+    button.textContent = textContent;
+    button.dataset.productId = datasetProductId;
+    button.dataset.change = datasetChange;
+    return button;
+};
+
+//장바구니 요소 생성
 function createCartItemElements(item) {
     const { name, id, price } = item;
+
     const el_itemContainer = document.createElement("div");
-    const el_itemInfo = document.createElement("span");
-    const el_buttonWrap = document.createElement("div");
-    const el_minusButton = document.createElement("button");
-    const el_plusButton = document.createElement("button");
-    const el_removeButton = document.createElement("button");
     el_itemContainer.id = id;
-    el_itemContainer.className = "flex justify-between items-center el_minusButton-2";
-    el_itemInfo.textContent = name + " - " + price + "원 x 1";
-    el_minusButton.className = "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1";
-    el_minusButton.textContent = "-";
-    el_minusButton.dataset.productId = id;
-    el_minusButton.dataset.change = "-1";
-    el_plusButton.className = "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1";
-    el_plusButton.textContent = "+";
-    el_plusButton.dataset.productId = id;
-    el_plusButton.dataset.change = "1";
-    el_removeButton.className = "remove-item bg-red-500 text-white px-2 py-1 rounded";
-    el_removeButton.textContent = "삭제";
-    el_removeButton.dataset.productId = id;
+    el_itemContainer.className = "flex justify-between items-center";
+
+    const el_itemInfo = document.createElement("span");
+
+    el_itemInfo.textContent = `${name} - ${price}원 x 1`;
+
+    const el_buttonWrap = document.createElement("div");
+
+    const el_minusButton = createButtonElement(
+        "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1",
+        "-",
+        id,
+        "-1"
+    );
+
+    const el_plusButton = createButtonElement(
+        "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1",
+        "+",
+        id,
+        "1"
+    );
+
+    const el_removeButton = createButtonElement(
+        "remove-item bg-red-500 text-white px-2 py-1 rounded",
+        "삭제",
+        id,
+        "remove"
+    );
+
     el_buttonWrap.appendChild(el_minusButton);
     el_buttonWrap.appendChild(el_plusButton);
     el_buttonWrap.appendChild(el_removeButton);
+
     el_itemContainer.appendChild(el_itemInfo);
     el_itemContainer.appendChild(el_buttonWrap);
+
     el_Cart.appendChild(el_itemContainer);
 }
 
