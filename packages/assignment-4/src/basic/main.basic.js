@@ -33,16 +33,6 @@ function createCartBaseElements() {
     return { $cart, $cartTotal, $selectBox, $addButton };
 }
 
-//장바구니 내 버튼 생성
-const createButtonElement = (className, text, id, changeFunc) => {
-    const $button = document.createElement("button");
-    $button.className = className;
-    $button.textContent = text;
-    $button.dataset.productId = id;
-    $button.dataset.change = changeFunc;
-    return $button;
-};
-
 //장바구니 목록 생성
 function createCartItemElements(item) {
     const { name, id, price } = item;
@@ -88,6 +78,16 @@ function createCartItemElements(item) {
     $cart.appendChild($itemContainer);
 }
 
+//버튼 생성
+const createButtonElement = (className, text, id, changeFunc) => {
+    const $button = document.createElement("button");
+    $button.className = className;
+    $button.textContent = text;
+    $button.dataset.productId = id;
+    $button.dataset.change = changeFunc;
+    return $button;
+};
+
 //상품 옵션 생성
 function createProductOptions($selectBox) {
     for (var i = 0; i < products.length; i++) {
@@ -111,7 +111,7 @@ function calculateDiscountRate(itemType) {
 }
 
 //추가 할인 계산
-function calculateAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOriginalPrice) {
+function applyAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOriginalPrice) {
     let discountRate = (totalOriginalPrice - totalDiscountPrice) / totalOriginalPrice;
     let finalPrice = totalDiscountPrice;
 
@@ -125,22 +125,25 @@ function calculateAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOri
 }
 
 //최종 계산결과 표시
-function displayCartResult(discountRate, price) {
-    $cartTotal.textContent = "총액: " + Math.round(price) + "원";
+function displayCartResult(result) {
+    const { discountRate, finalPrice } = result;
+
+    $cartTotal.textContent = "총액: " + Math.round(finalPrice) + "원";
 
     if (discountRate > 0) {
-        var dspan = document.createElement("span");
-        dspan.className = "text-green-500 ml-2";
-        dspan.textContent = "(" + (discountRate * 100).toFixed(1) + "% 할인 적용)";
-        $cartTotal.appendChild(dspan);
+        var $span = document.createElement("span");
+        $span.className = "text-green-500 ml-2";
+        $span.textContent = "(" + (discountRate * 100).toFixed(1) + "% 할인 적용)";
+        $cartTotal.appendChild($span);
     }
 }
 
-//장바구니 상품별 계산
-function calculateCartItemDetails($cartItems) {
+//장바구니에 담긴 상품 계산
+function calculateCartItems($cartItems) {
     let totalQuantity = 0;
     let totalOriginalPrice = 0;
     let totalDiscountedPrice = 0;
+
     Array.from($cartItems).forEach((item) => {
         const target = products.find((product) => product.id === item.id);
         const itemType = target.id;
@@ -163,18 +166,14 @@ function calculateCartItemDetails($cartItems) {
 function updateCart() {
     const $cartItems = $cart.children;
 
-    //장바구니 상품 계산
-    const { totalQuantity, totalDiscountedPrice, totalOriginalPrice } = calculateCartItemDetails($cartItems);
+    //장바구니에 담긴 상품 계산
+    const { totalQuantity, totalDiscountedPrice, totalOriginalPrice } = calculateCartItems($cartItems);
 
-    //추가할인 계산
-    let { discountRate, finalPrice } = calculateAdditionalDiscount(
-        totalQuantity,
-        totalDiscountedPrice,
-        totalOriginalPrice
-    );
+    //추가할인 적용
+    const result = applyAdditionalDiscount(totalQuantity, totalDiscountedPrice, totalOriginalPrice);
 
     //최종 계산결과 표시
-    displayCartResult(discountRate, finalPrice);
+    displayCartResult(result);
 }
 
 //상품 수량 표시
@@ -194,13 +193,6 @@ function addCartItem() {
         cartItem ? displayItemQuantity(cartItem, targetProduct) : createCartItemElements(targetProduct);
         updateCart();
     }
-}
-
-//담긴상품정보 추출
-function getItemDataByText(targetText) {
-    const itemInfo = targetText[0];
-    const currentQuantity = parseInt(targetText[1]);
-    return { itemInfo, currentQuantity };
 }
 
 //장바구니 상품 관리
@@ -229,6 +221,13 @@ function manageCartItem(event) {
     isRemoveButton && $targetItem.remove();
 
     updateCart();
+}
+
+//텍스트에서 담긴상품정보 추출(상품정보, 담긴수량)
+function getItemDataByText(targetText) {
+    const itemInfo = targetText[0];
+    const currentQuantity = parseInt(targetText[1]);
+    return { itemInfo, currentQuantity };
 }
 
 function main() {
