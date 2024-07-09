@@ -231,7 +231,7 @@ function main() {
     //추가버튼 클릭
     el_AddButton.addEventListener("click", addCartItem);
 
-    //장바구니 상품별 이벤트 핸들링
+    //추가된 상품목록 내 버튼 클릭
     el_Cart.addEventListener("click", manageCartItem);
 }
 
