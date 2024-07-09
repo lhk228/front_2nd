@@ -5,10 +5,11 @@ const products = [
 ];
 
 //전역 핸들링 elements
-const { container, el_Cart, el_Total, el_Box, el_Wrap, el_Title, el_SelectBox, el_AddButton } = createCartElements();
+const { container, el_Cart, el_Total, el_Box, el_Wrap, el_Title, el_SelectBox, el_AddButton } =
+    createCartBaseElements();
 
-//장바구니 요소 생성
-function createCartElements() {
+//장바구니 기본요소 생성
+function createCartBaseElements() {
     var container = document.getElementById("app");
     var el_Cart = document.createElement("div");
     var el_Total = document.createElement("div");
@@ -52,7 +53,7 @@ const createButtonElement = (className, textContent, datasetProductId, datasetCh
     return button;
 };
 
-//장바구니 요소 생성
+//장바구니 목록 생성
 function createCartItemElements(item) {
     const { name, id, price } = item;
 
