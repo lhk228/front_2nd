@@ -1,5 +1,4 @@
 import { PRODUCTS } from "./data";
-import { render } from "./createCartView";
 import { BULK_DISCOUNT_RATE, DISCOUNT_THRESHOLD, BULK_DISCOUNT_THRESHOLD } from "./constants";
 
 //데이터 핸들링
@@ -22,7 +21,6 @@ export const createShoppingCart = () => {
                 selectedProduct.quantity = 1;
                 break;
         }
-        render.updateCartView(productId);
     };
 
     //수량, 할인율 합계

@@ -8,13 +8,19 @@ const handleCartItemButtonClick = (event) => {
     const $target = event.target;
     const productId = $target.dataset.productId;
 
-    if ($target.classList.contains("remove-item")) {
-        updateQuantity("remove", productId);
-    } else if ($target.classList.contains("plus-item")) {
-        updateQuantity("plus", productId);
-    } else if ($target.classList.contains("minus-item")) {
-        updateQuantity("minus", productId);
+    switch (true) {
+        case $target.classList.contains("remove-item"):
+            updateQuantity("remove", productId);
+            break;
+        case $target.classList.contains("plus-item"):
+            updateQuantity("plus", productId);
+            break;
+        case $target.classList.contains("minus-item"):
+            updateQuantity("minus", productId);
+            break;
     }
+
+    render.updateCartView(productId);
 };
 
 //추가버튼 클릭
@@ -26,7 +32,10 @@ const handleAddClick = () => {
 
     //상품추가 or 업데이트
     const $cartItem = document.getElementById(productId);
+
     $cartItem ? updateQuantity("plus", productId) : updateQuantity("add", productId);
+
+    render.updateCartView(productId);
 };
 
 function main() {
