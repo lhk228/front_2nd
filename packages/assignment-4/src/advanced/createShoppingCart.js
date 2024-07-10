@@ -7,6 +7,7 @@ export const createShoppingCart = () => {
     //상품 수량 업데이트
     const updateQuantity = (updateType, productId) => {
         const selectedProduct = PRODUCTS.find((item) => item.id === productId);
+
         switch (updateType) {
             case "plus":
                 selectedProduct.quantity++;
@@ -78,13 +79,9 @@ export const createShoppingCart = () => {
         return { name, price, quantity };
     };
 
-    //상품 수량 초기화
-    const initProductQuantity = () => {};
-
     return {
         updateQuantity,
         getTotal,
         getItemData,
-        initProductQuantity,
     };
 };

@@ -13,6 +13,7 @@ const render = {
         const $select = document.querySelector("#product-select");
         $select.innerHTML = ProductOption();
     },
+
     //장바구니 뷰 업데이트
     updateCartView: function (productId) {
         const { getTotal, getItemData } = createShoppingCart();
@@ -37,6 +38,7 @@ const render = {
         const $cartTotal = document.querySelector(`#cart-total`);
         $cartTotal.innerHTML = html;
     },
+
     //상품 추가
     addItem: (productId, quantity) => {
         if (quantity === 0) return;
