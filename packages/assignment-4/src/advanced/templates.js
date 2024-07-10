@@ -46,11 +46,11 @@ function CartItem(item) {
 
 //합계
 const CartTotal = (result) => {
-    const { discountRate, finalPrice } = result;
+    const { discountRate, total } = result;
 
-    let htmlContent = `총액: ${Math.round(finalPrice)}원`;
+    let htmlContent = `총액: ${Math.round(total)}원`;
 
-    discountRate > 0 &&
+    discountRate < 1 &&
         (htmlContent += `<span class="text-green-500 ml-2"> (${(discountRate * 100).toFixed(1)}% 할인 적용)</span>`);
 
     return htmlContent;
