@@ -1,7 +1,6 @@
-import { CartTotal, CartItem } from "./templates";
 import { createShoppingCart } from "./createShoppingCart";
 import { numComma } from "./utils";
-import { ProductOption, MainLayout } from "./templates";
+import { CartTotal, CartItem, ProductOption, MainLayout } from "./templates";
 
 //뷰 렌더링
 const render = {
