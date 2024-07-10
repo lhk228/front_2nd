@@ -1,6 +1,5 @@
 import { ProductOption, MainLayout, CartTotal } from "./templates";
 import { products } from "./data";
-import { createCartView } from "./createCartView";
 import { createShoppingCart } from "./createShoppingCart";
 
 const { updateQuantity } = createShoppingCart();
@@ -17,15 +16,16 @@ const handleAddClick = () => {
     $cartItem ? updateQuantity("plus", product.id) : updateQuantity("add", product.id);
 };
 
+//초기 렌더링
+const initLayout = () => {
+    const $app = document.querySelector("#app");
+    $app.innerHTML = MainLayout();
+
+    const $select = document.querySelector("#product-select");
+    $select.innerHTML = ProductOption(products);
+};
+
 function main() {
-    const initLayout = () => {
-        const $app = document.querySelector("#app");
-        $app.innerHTML = MainLayout();
-
-        const $select = document.querySelector("#product-select");
-        $select.innerHTML = ProductOption(products);
-    };
-
     initLayout();
     //추가버튼 이벤트
     const $addBtn = document.querySelector("#add-to-cart");
