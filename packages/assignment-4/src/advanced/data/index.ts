@@ -1,2 +1,2 @@
-import products from "./product";
-export { products };
+import PRODUCTS from "./product";
+export { PRODUCTS };

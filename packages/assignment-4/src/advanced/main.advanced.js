@@ -1,4 +1,4 @@
-import { products } from "./data";
+import { PRODUCTS } from "./data";
 import { ProductOption, MainLayout } from "./templates";
 import { createShoppingCart } from "./createShoppingCart";
 
@@ -7,7 +7,7 @@ const { updateQuantity } = createShoppingCart();
 //추가버튼 클릭
 const handleAddClick = () => {
     const productId = document.querySelector("#product-select").value;
-    const selectedProduct = products.find((item) => item.id === productId);
+    const selectedProduct = PRODUCTS.find((item) => item.id === productId);
 
     if (!selectedProduct) return;
 
@@ -23,7 +23,7 @@ function main() {
         $app.innerHTML = MainLayout();
 
         const $select = document.querySelector("#product-select");
-        $select.innerHTML = ProductOption(products);
+        $select.innerHTML = ProductOption(PRODUCTS);
     };
 
     initLayout();
