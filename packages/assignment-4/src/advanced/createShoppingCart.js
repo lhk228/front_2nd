@@ -29,21 +29,21 @@ export const createShoppingCart = () => {
     };
 
     //상품 수량 업데이트
-    const updateQuantity = (type, targetId) => {
-        const target = products.find((item) => item.id === targetId);
+    const updateQuantity = (updateType, productId) => {
+        const selectedProduct = products.find((item) => item.id === productId);
 
-        switch (type) {
+        switch (updateType) {
             case "plus":
-                target.quantity++;
+                selectedProduct.quantity++;
                 break;
             case "minus":
-                target.quantity--;
+                selectedProduct.quantity--;
                 break;
             case "remove":
-                target.quantity = 0;
+                selectedProduct.quantity = 0;
                 break;
             case "add":
-                target.quantity = 1;
+                selectedProduct.quantity = 1;
                 break;
         }
 
@@ -52,11 +52,13 @@ export const createShoppingCart = () => {
 
     //상품 삭제 : 선택상품 삭제 후 수량 초기화
     const removeItem = (productId) => {
-        const $targetItem = document.getElementById(productId);
-        $targetItem && $targetItem.remove();
+        const $target = document.getElementById(productId);
 
-        const target = products.find((item) => item.id === productId);
-        target.quantity = 0;
+        $target && $target.remove();
+
+        const selectedProduct = products.find((item) => item.id === productId);
+
+        selectedProduct.quantity = 0;
     };
 
     const getItems = () => [];
@@ -74,11 +76,11 @@ export const createShoppingCart = () => {
 
     //상품 정보 가져오기
     const getItemData = (productId) => {
-        const product = products.find((item) => item.id === productId);
+        const selectedProduct = products.find((item) => item.id === productId);
 
-        const { name, price, quantity } = product;
+        const { name, price, quantity } = selectedProduct;
 
-        return { product, name, price, quantity };
+        return { selectedProduct, name, price, quantity };
     };
 
     return { addItem, removeItem, updateQuantity, getItems, getTotal, getItemData };
