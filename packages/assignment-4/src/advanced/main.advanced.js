@@ -27,6 +27,7 @@ const initLayout = () => {
 
 function main() {
     initLayout();
+
     //추가버튼 이벤트
     const $addBtn = document.querySelector("#add-to-cart");
     $addBtn.addEventListener("click", handleAddClick);
