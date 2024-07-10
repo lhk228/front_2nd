@@ -1,47 +1,63 @@
-import { CartItem } from "./templates";
 import { createCartView } from "./createCartView";
+import { products } from "./data";
+import { CartItem } from "./templates";
 
 //데이터 핸들링
 export const createShoppingCart = () => {
     const items = {};
 
     //상품 추가하기
-    const addItem = ($cart, product, handleFunc) => {
+    const addItem = (product) => {
+        const $cart = document.querySelector("#cart-items");
         const $itemContainer = document.createElement("div");
-        const { handleRemoveClick, handlePlusClick, handleMinusClick } = handleFunc;
         $itemContainer.id = product.id;
         $itemContainer.className = "flex justify-between items-center";
         $itemContainer.innerHTML = CartItem(product);
-        $itemContainer.dataset.product = JSON.stringify(product);
-        $itemContainer.dataset.quantity = 1;
-
         $cart.appendChild($itemContainer);
 
         // 추가된 상품에 이벤트 리스너 추가
         const $newCartItem = document.getElementById(product.id);
 
         const $removeBtn = $newCartItem.querySelector(".remove-item");
-        $removeBtn.addEventListener("click", handleRemoveClick);
+        $removeBtn.addEventListener("click", () => updateQuantity("remove", product.id));
 
         const $plusBtn = $newCartItem.querySelector(".plus-item");
-        $plusBtn.addEventListener("click", handlePlusClick);
+        $plusBtn.addEventListener("click", () => updateQuantity("plus", product.id));
 
         const $minusBtn = $newCartItem.querySelector(".minus-item");
-        $minusBtn.addEventListener("click", handleMinusClick);
+        $minusBtn.addEventListener("click", () => updateQuantity("minus", product.id));
     };
 
     //상품 수량 업데이트
-    const updateQuantity = (product) => {
-        const { id } = product;
-        const target = document.querySelector(`#${id}`);
+    const updateQuantity = (type, targetId) => {
+        const target = products.find((item) => item.id === targetId);
 
-        target.dataset.quantity++;
+        switch (type) {
+            case "plus":
+                target.quantity++;
+                break;
+            case "minus":
+                target.quantity--;
+                break;
+            case "remove":
+                target.quantity = 0;
+                break;
+            case "add":
+                target.quantity = 1;
+                break;
+        }
 
-        createCartView(id);
+        createCartView(targetId);
     };
 
-    //상품 삭제
-    const removeItem = () => {};
+    //상품 삭제 : 선택상품 삭제 후 수량 초기화
+    const removeItem = (productId) => {
+        const $targetItem = document.getElementById(productId);
+        $targetItem && $targetItem.remove();
+
+        const target = products.find((item) => item.id === productId);
+        target.quantity = 0;
+    };
 
     const getItems = () => [];
 
@@ -58,12 +74,11 @@ export const createShoppingCart = () => {
 
     //상품 정보 가져오기
     const getItemData = (productId) => {
-        const target = document.querySelector(`#${productId}`);
-        const product = target.dataset.product;
-        const quantity = Number(target.dataset.quantity);
-        const { name, price } = JSON.parse(product);
+        const product = products.find((item) => item.id === productId);
 
-        return { target, name, price, quantity };
+        const { name, price, quantity } = product;
+
+        return { product, name, price, quantity };
     };
 
     return { addItem, removeItem, updateQuantity, getItems, getTotal, getItemData };
