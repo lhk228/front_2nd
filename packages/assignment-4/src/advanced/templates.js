@@ -1,12 +1,13 @@
 import { createShoppingCart } from "./createShoppingCart";
 import { numComma } from "./utils";
+import { PRODUCTS } from "./data";
 const { getItemData } = createShoppingCart();
 
 //상품  Option  템플릿 리터럴
-const ProductOption = (products) => {
-    return products
-        .map((item) => `<option value="${item.id}">${item.name} - ${numComma(item.price)}원</option>`)
-        .join("");
+const ProductOption = () => {
+    return PRODUCTS.map((item) => `<option value="${item.id}">${item.name} - ${numComma(item.price)}원</option>`).join(
+        ""
+    );
 };
 
 //장바구니 레이아웃 템플릿 리터럴

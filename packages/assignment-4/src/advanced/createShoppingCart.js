@@ -1,5 +1,5 @@
 import { PRODUCTS } from "./data";
-import { createCartView } from "./createCartView";
+import { render } from "./createCartView";
 import { BULK_DISCOUNT_RATE, DISCOUNT_THRESHOLD, BULK_DISCOUNT_THRESHOLD } from "./constants";
 
 //데이터 핸들링
@@ -7,7 +7,6 @@ export const createShoppingCart = () => {
     //상품 수량 업데이트
     const updateQuantity = (updateType, productId) => {
         const selectedProduct = PRODUCTS.find((item) => item.id === productId);
-
         switch (updateType) {
             case "plus":
                 selectedProduct.quantity++;
@@ -22,19 +21,7 @@ export const createShoppingCart = () => {
                 selectedProduct.quantity = 1;
                 break;
         }
-
-        createCartView(productId);
-    };
-
-    //상품 삭제 : 선택상품 삭제 후 수량 초기화
-    const removeItem = (productId) => {
-        const $target = document.getElementById(productId);
-
-        $target && $target.remove();
-
-        const selectedProduct = PRODUCTS.find((item) => item.id === productId);
-
-        selectedProduct.quantity = 0;
+        render.updateCartView(productId);
     };
 
     //수량, 할인율 합계
@@ -91,10 +78,13 @@ export const createShoppingCart = () => {
         return { name, price, quantity };
     };
 
+    //상품 수량 초기화
+    const initProductQuantity = () => {};
+
     return {
-        removeItem,
         updateQuantity,
         getTotal,
         getItemData,
+        initProductQuantity,
     };
 };

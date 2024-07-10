@@ -1,7 +1,6 @@
+import { render } from "./createCartView";
 import { PRODUCTS } from "./data";
-import { ProductOption, MainLayout } from "./templates";
 import { createShoppingCart } from "./createShoppingCart";
-
 const { updateQuantity } = createShoppingCart();
 
 //장바구니 상품별 버튼 클릭
@@ -31,13 +30,7 @@ const handleAddClick = () => {
 };
 
 function main() {
-    //기본 레이아웃 추가
-    const $app = document.querySelector("#app");
-    $app.innerHTML = MainLayout();
-
-    //select option 생성
-    const $select = document.querySelector("#product-select");
-    $select.innerHTML = ProductOption(PRODUCTS);
+    render.createCartView();
 
     //추가버튼 이벤트 바인딩
     const $addBtn = document.querySelector("#add-to-cart");
