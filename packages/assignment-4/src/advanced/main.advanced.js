@@ -4,6 +4,20 @@ import { createShoppingCart } from "./createShoppingCart";
 
 const { updateQuantity } = createShoppingCart();
 
+//장바구니 상품별 버튼 클릭
+const handleCartItemButtnClick = (event) => {
+    const $target = event.target;
+    const productId = $target.dataset.productId;
+
+    if ($target.classList.contains("remove-item")) {
+        updateQuantity("remove", productId);
+    } else if ($target.classList.contains("plus-item")) {
+        updateQuantity("plus", productId);
+    } else if ($target.classList.contains("minus-item")) {
+        updateQuantity("minus", productId);
+    }
+};
+
 //추가버튼 클릭
 const handleAddClick = () => {
     const productId = document.querySelector("#product-select").value;
@@ -17,20 +31,21 @@ const handleAddClick = () => {
 };
 
 function main() {
-    //초기 렌더링
-    const initLayout = () => {
-        const $app = document.querySelector("#app");
-        $app.innerHTML = MainLayout();
+    //기본 레이아웃 추가
+    const $app = document.querySelector("#app");
+    $app.innerHTML = MainLayout();
 
-        const $select = document.querySelector("#product-select");
-        $select.innerHTML = ProductOption(PRODUCTS);
-    };
+    //select option 생성
+    const $select = document.querySelector("#product-select");
+    $select.innerHTML = ProductOption(PRODUCTS);
 
-    initLayout();
-
-    //추가버튼 이벤트
+    //추가버튼 이벤트 바인딩
     const $addBtn = document.querySelector("#add-to-cart");
     $addBtn.addEventListener("click", handleAddClick);
+
+    //장바구니 상품별 버튼 이벤트 바인딩
+    const $cartList = document.querySelector("#cart-items");
+    $cartList.addEventListener("click", handleCartItemButtnClick);
 }
 
 main();

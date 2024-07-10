@@ -24,26 +24,26 @@ const MainLayout = () => {
 
 //장바구니 아이템 템플릿 리터럴
 function CartItem(productId) {
-    const { name, id, price } = getItemData(productId);
+    const { name, price } = getItemData(productId);
     return `
         <span class="product-info">${name} - ${numComma(price)}원 x 1</span>
         <div class="btn-wrap">
             <button
                 class="minus-item quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-                data-product-id="${id}"
+                data-product-id="${productId}"
                 >
                 -
             </button>
             <button
                 class="plus-item quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
-                data-product-id="${id}"
+                data-product-id="${productId}"
                 >
                 +
             </button>
             <button
                 class="remove-item bg-red-500 text-white px-2 py-1 rounded"
-                data-product-id="${id}"
-                data-change="remove">
+                data-product-id="${productId}"
+                >
                 삭제
             </button>
         </div>

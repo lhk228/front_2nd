@@ -1,34 +1,9 @@
 import { PRODUCTS } from "./data";
-import { CartItem } from "./templates";
 import { createCartView } from "./createCartView";
 import { BULK_DISCOUNT_RATE, DISCOUNT_THRESHOLD, BULK_DISCOUNT_THRESHOLD } from "./constants";
 
 //데이터 핸들링
 export const createShoppingCart = () => {
-    //상품 추가하기
-    const addItem = (productId, quantity) => {
-        if (quantity === 0) return;
-
-        const $cart = document.querySelector("#cart-items");
-        const $itemContainer = document.createElement("div");
-        $itemContainer.id = productId;
-        $itemContainer.className = "flex justify-between items-center mt-5 border-b-2 pb-2";
-        $itemContainer.innerHTML = CartItem(productId);
-        $cart.appendChild($itemContainer);
-
-        // 추가된 상품에 이벤트 리스너 추가
-        const $newCartItem = document.getElementById(productId);
-
-        const $removeBtn = $newCartItem.querySelector(".remove-item");
-        $removeBtn.addEventListener("click", () => updateQuantity("remove", productId));
-
-        const $plusBtn = $newCartItem.querySelector(".plus-item");
-        $plusBtn.addEventListener("click", () => updateQuantity("plus", productId));
-
-        const $minusBtn = $newCartItem.querySelector(".minus-item");
-        $minusBtn.addEventListener("click", () => updateQuantity("minus", productId));
-    };
-
     //상품 수량 업데이트
     const updateQuantity = (updateType, productId) => {
         const selectedProduct = PRODUCTS.find((item) => item.id === productId);
@@ -117,7 +92,6 @@ export const createShoppingCart = () => {
     };
 
     return {
-        addItem,
         removeItem,
         updateQuantity,
         getTotal,

@@ -1,10 +1,22 @@
-import { CartTotal } from "./templates";
+import { CartTotal, CartItem } from "./templates";
 import { createShoppingCart } from "./createShoppingCart";
 import { numComma } from "./utils";
 
+//상품 추가하기
+const addItem = (productId, quantity) => {
+    if (quantity === 0) return;
+
+    const $cart = document.querySelector("#cart-items");
+    const $itemContainer = document.createElement("div");
+    $itemContainer.id = productId;
+    $itemContainer.className = "flex justify-between items-center mt-5 border-b-2 pb-2";
+    $itemContainer.innerHTML = CartItem(productId);
+    $cart.appendChild($itemContainer);
+};
+
 //뷰 렌더링
 export const createCartView = (productId) => {
-    const { addItem, removeItem, getTotal, getItemData } = createShoppingCart();
+    const { removeItem, getTotal, getItemData } = createShoppingCart();
     const { name, price, quantity } = getItemData(productId);
 
     //수량이 1보다 작으면 삭제
