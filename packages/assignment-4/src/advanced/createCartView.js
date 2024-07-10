@@ -1,7 +1,6 @@
 import { createShoppingCart } from "./createShoppingCart";
 import { CartTotal } from "./templates";
-const { addItem, removeItem, updateQuantity, calculateDiscount, getTotalQuantity, getTotal, getItemData } =
-    createShoppingCart();
+const { addItem, removeItem, getTotal, getItemData } = createShoppingCart();
 
 //뷰 렌더링
 export const createCartView = (productId) => {

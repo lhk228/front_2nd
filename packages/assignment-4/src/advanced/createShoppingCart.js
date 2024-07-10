@@ -61,7 +61,7 @@ export const createShoppingCart = () => {
         selectedProduct.quantity = 0;
     };
 
-    //수량, 할인율 최종
+    //수량, 할인율 합계
     const getTotal = () => {
         let totalQuantity = 0;
         let originPriceTotal = 0;
@@ -90,7 +90,11 @@ export const createShoppingCart = () => {
             totalQuantity += quantity;
         });
 
-        discountPriceTotal = totalQuantity >= 30 ? originPriceTotal * 0.75 : discountPriceTotal;
+        // 30개 이상일 경우 고정 할인
+        const bulkDiscountPrice = originPriceTotal * 0.75;
+
+        // 개별 할인과 고정 할인 중 더 저렴한 가격 선택
+        discountPriceTotal = totalQuantity >= 30 ? Math.min(bulkDiscountPrice, discountPriceTotal) : discountPriceTotal;
 
         let discountRate = (originPriceTotal - discountPriceTotal) / originPriceTotal;
 

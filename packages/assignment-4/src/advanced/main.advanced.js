@@ -3,7 +3,7 @@ import { products } from "./data";
 import { createCartView } from "./createCartView";
 import { createShoppingCart } from "./createShoppingCart";
 
-const { addItem, removeItem, updateQuantity, getItems, getTotal, getItemData } = createShoppingCart();
+const { updateQuantity } = createShoppingCart();
 
 //추가버튼 클릭
 const handleAddClick = () => {

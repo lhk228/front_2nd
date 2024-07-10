@@ -44,7 +44,7 @@ function CartItem(item) {
 	`;
 }
 
-//합계
+//합계 리터럴
 const CartTotal = (result) => {
     const { discountRate, total } = result;
 
