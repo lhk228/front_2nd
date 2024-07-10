@@ -5,27 +5,27 @@ import { createCartView } from "./createCartView";
 //데이터 핸들링
 export const createShoppingCart = () => {
     //상품 추가하기
-    const addItem = (product) => {
-        if (product.quantity === 0) return;
+    const addItem = (productId, quantity) => {
+        if (quantity === 0) return;
 
         const $cart = document.querySelector("#cart-items");
         const $itemContainer = document.createElement("div");
-        $itemContainer.id = product.id;
-        $itemContainer.className = "flex justify-between items-center";
-        $itemContainer.innerHTML = CartItem(product);
+        $itemContainer.id = productId;
+        $itemContainer.className = "flex justify-between items-center mt-5 border-b-2 pb-2";
+        $itemContainer.innerHTML = CartItem(productId);
         $cart.appendChild($itemContainer);
 
         // 추가된 상품에 이벤트 리스너 추가
-        const $newCartItem = document.getElementById(product.id);
+        const $newCartItem = document.getElementById(productId);
 
         const $removeBtn = $newCartItem.querySelector(".remove-item");
-        $removeBtn.addEventListener("click", () => updateQuantity("remove", product.id));
+        $removeBtn.addEventListener("click", () => updateQuantity("remove", productId));
 
         const $plusBtn = $newCartItem.querySelector(".plus-item");
-        $plusBtn.addEventListener("click", () => updateQuantity("plus", product.id));
+        $plusBtn.addEventListener("click", () => updateQuantity("plus", productId));
 
         const $minusBtn = $newCartItem.querySelector(".minus-item");
-        $minusBtn.addEventListener("click", () => updateQuantity("minus", product.id));
+        $minusBtn.addEventListener("click", () => updateQuantity("minus", productId));
     };
 
     //상품 수량 업데이트
@@ -106,7 +106,7 @@ export const createShoppingCart = () => {
         const selectedProduct = products.find((item) => item.id === productId);
         const { name, price, quantity } = selectedProduct;
 
-        return { selectedProduct, name, price, quantity };
+        return { name, price, quantity };
     };
 
     return {
