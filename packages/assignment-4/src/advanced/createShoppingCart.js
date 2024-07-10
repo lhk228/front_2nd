@@ -1,6 +1,6 @@
-import { createCartView } from "./createCartView";
 import { products } from "./data";
 import { CartItem } from "./templates";
+import { createCartView } from "./createCartView";
 
 //데이터 핸들링
 export const createShoppingCart = () => {
