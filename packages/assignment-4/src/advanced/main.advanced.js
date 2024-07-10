@@ -6,14 +6,14 @@ const { updateQuantity } = createShoppingCart();
 
 //추가버튼 클릭
 const handleAddClick = () => {
-    const selected = document.querySelector("#product-select").value;
-    const product = products.find((item) => item.id === selected);
+    const selectedValue = document.querySelector("#product-select").value;
+    const selectedProduct = products.find((item) => item.id === selectedValue);
 
-    if (!product) return;
+    if (!selectedProduct) return;
 
     //상품추가 or 업데이트
-    const $cartItem = document.getElementById(product.id);
-    $cartItem ? updateQuantity("plus", product.id) : updateQuantity("add", product.id);
+    const $cartItem = document.getElementById(selectedProduct.id);
+    $cartItem ? updateQuantity("plus", selectedProduct.id) : updateQuantity("add", selectedProduct.id);
 };
 
 function main() {
