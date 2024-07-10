@@ -1,10 +1,11 @@
+//상품 데이터
 const products = [
     { id: "p1", name: "상품1", price: 10000 },
     { id: "p2", name: "상품2", price: 20000 },
     { id: "p3", name: "상품3", price: 30000 },
 ];
 
-//전역 핸들링 elements
+//전역 참조 elements
 const { $cart, $cartTotal, $selectBox, $addButton } = createCartBaseElements();
 
 //장바구니 기본요소 생성
@@ -33,6 +34,17 @@ function createCartBaseElements() {
     return { $cart, $cartTotal, $selectBox, $addButton };
 }
 
+//상품 옵션 생성
+function createProductOptions($selectBox) {
+    let optionHtml = "";
+
+    products.forEach((item) => {
+        optionHtml += `<option value="${item.id}">${item.name} - ${item.price}원</option>`;
+    });
+
+    $selectBox.innerHTML = optionHtml;
+}
+
 //장바구니 목록 생성
 function createCartItemElements(item) {
     const { name, id, price } = item;
@@ -41,6 +53,7 @@ function createCartItemElements(item) {
     $itemContainer.id = id;
     $itemContainer.className = "flex justify-between items-center";
 
+    //리터럴 템플릿으로 버튼을 생성합니다
     var htmlContent = `
         <span>${name} - ${price} x 1</span>
         <div>
@@ -69,29 +82,8 @@ function createCartItemElements(item) {
     $cart.appendChild($itemContainer);
 }
 
-//버튼 생성
-const createButtonElement = (className, text, id, changeFunc) => {
-    const $button = document.createElement("button");
-    $button.className = className;
-    $button.textContent = text;
-    $button.dataset.productId = id;
-    $button.dataset.change = changeFunc;
-    return $button;
-};
-
-//상품 옵션 생성
-function createProductOptions($selectBox) {
-    let optionHtml = "";
-
-    products.forEach((item) => {
-        optionHtml += `<option value="${item.id}">${item.name} - ${item.price}원</option>`;
-    });
-
-    $selectBox.innerHTML = optionHtml;
-}
-
-//할인율 계산
-function calculateDiscountRate(itemType) {
+//상품타입별 할인율 반환
+function getDiscountRateByItemType(itemType) {
     switch (itemType) {
         case "p1":
             return 0.1;
@@ -102,29 +94,11 @@ function calculateDiscountRate(itemType) {
     }
 }
 
-//추가 할인 계산
-function applyAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOriginalPrice) {
-    let discountRate = (totalOriginalPrice - totalDiscountPrice) / totalOriginalPrice;
-    let finalPrice = totalDiscountPrice;
-
-    // 30개 이상일 경우 높은 할인율 적용
-    if (totalQuantity >= 30) {
-        finalPrice = totalOriginalPrice * 0.75;
-        discountRate = 0.25;
-    }
-
-    return { discountRate, finalPrice };
-}
-
-//최종 계산결과 표시
-function displayCartResult(result) {
-    const { discountRate, finalPrice } = result;
-
-    let htmlContent = `총액: ${Math.round(finalPrice)}원`;
-
-    discountRate > 0 &&
-        (htmlContent += `<span class="text-green-500 ml-2"> (${(discountRate * 100).toFixed(1)}% 할인 적용)</span>`);
-    $cartTotal.innerHTML = htmlContent;
+//텍스트에서 담긴상품정보 추출(상품정보, 담긴수량)
+function getItemDataByText(targetText) {
+    const itemInfo = targetText[0];
+    const currentQuantity = parseInt(targetText[1]);
+    return { itemInfo, currentQuantity };
 }
 
 //장바구니에 담긴 상품 계산
@@ -143,7 +117,7 @@ function calculateCartItems($cartItems) {
         totalQuantity += quantity;
         totalOriginalPrice += calPrice;
 
-        const discountRate = quantity >= 10 ? calculateDiscountRate(itemType) : 0;
+        const discountRate = quantity >= 10 ? getDiscountRateByItemType(itemType) : 0;
 
         totalDiscountedPrice += calPrice * (1 - discountRate);
     });
@@ -151,18 +125,18 @@ function calculateCartItems($cartItems) {
     return { totalQuantity, totalDiscountedPrice, totalOriginalPrice };
 }
 
-//장바구니 업데이트
-function updateCart() {
-    const $cartItems = $cart.children;
+//추가 할인 적용
+function applyAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOriginalPrice) {
+    let discountRate = (totalOriginalPrice - totalDiscountPrice) / totalOriginalPrice;
+    let finalPrice = totalDiscountPrice;
 
-    //장바구니에 담긴 상품 계산
-    const { totalQuantity, totalDiscountedPrice, totalOriginalPrice } = calculateCartItems($cartItems);
+    // 30개 이상일 경우 높은 할인율 적용
+    if (totalQuantity >= 30) {
+        finalPrice = totalOriginalPrice * 0.75;
+        discountRate = 0.25;
+    }
 
-    //추가할인 적용
-    const result = applyAdditionalDiscount(totalQuantity, totalDiscountedPrice, totalOriginalPrice);
-
-    //최종 계산결과 표시
-    displayCartResult(result);
+    return { discountRate, finalPrice };
 }
 
 //상품 수량 표시
@@ -170,6 +144,17 @@ function displayItemQuantity(targetElement, targetProduct) {
     const { name, price } = targetProduct;
     const quantity = parseInt(targetElement.querySelector("span").textContent.split("x ")[1]) + 1;
     targetElement.querySelector("span").textContent = `${name} - ${price}원 x ${quantity}`;
+}
+
+//최종 계산결과 표시
+function displayCartResult(result) {
+    const { discountRate, finalPrice } = result;
+
+    let htmlContent = `총액: ${Math.round(finalPrice)}원`;
+
+    discountRate > 0 &&
+        (htmlContent += `<span class="text-green-500 ml-2"> (${(discountRate * 100).toFixed(1)}% 할인 적용)</span>`);
+    $cartTotal.innerHTML = htmlContent;
 }
 
 //장바구니에 상품 추가
@@ -212,11 +197,18 @@ function manageCartItem(event) {
     updateCart();
 }
 
-//텍스트에서 담긴상품정보 추출(상품정보, 담긴수량)
-function getItemDataByText(targetText) {
-    const itemInfo = targetText[0];
-    const currentQuantity = parseInt(targetText[1]);
-    return { itemInfo, currentQuantity };
+//장바구니 업데이트
+function updateCart() {
+    const $cartItems = $cart.children;
+
+    //장바구니에 담긴 상품 계산
+    const { totalQuantity, totalDiscountedPrice, totalOriginalPrice } = calculateCartItems($cartItems);
+
+    //추가할인 적용
+    const result = applyAdditionalDiscount(totalQuantity, totalDiscountedPrice, totalOriginalPrice);
+
+    //최종 계산결과 표시
+    displayCartResult(result);
 }
 
 function main() {
