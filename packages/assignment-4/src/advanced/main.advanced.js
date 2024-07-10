@@ -5,7 +5,7 @@ import { createShoppingCart } from "./createShoppingCart";
 const { updateQuantity } = createShoppingCart();
 
 //장바구니 상품별 버튼 클릭
-const handleCartItemButtnClick = (event) => {
+const handleCartItemButtonClick = (event) => {
     const $target = event.target;
     const productId = $target.dataset.productId;
 
@@ -45,7 +45,7 @@ function main() {
 
     //장바구니 상품별 버튼 이벤트 바인딩
     const $cartList = document.querySelector("#cart-items");
-    $cartList.addEventListener("click", handleCartItemButtnClick);
+    $cartList.addEventListener("click", handleCartItemButtonClick);
 }
 
 main();
