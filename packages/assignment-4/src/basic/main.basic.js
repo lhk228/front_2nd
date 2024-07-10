@@ -36,45 +36,36 @@ function createCartBaseElements() {
 //장바구니 목록 생성
 function createCartItemElements(item) {
     const { name, id, price } = item;
-
     const $itemContainer = document.createElement("div");
+
     $itemContainer.id = id;
     $itemContainer.className = "flex justify-between items-center";
 
-    const $itemInfo = document.createElement("span");
+    var htmlContent = `
+        <span>${name} - ${price} x 1</span>
+        <div>
+            <button
+                class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+                data-product-id="${id}"
+                data-change="-1">
+                -
+            </button>
+            <button
+                class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
+                data-product-id="${id}"
+                data-change="1">
+                +
+            </button>
+            <button
+                class="remove-item bg-red-500 text-white px-2 py-1 rounded"
+                data-product-id="${id}"
+                data-change="remove">
+                삭제
+            </button>
+        </div>
+	`;
 
-    $itemInfo.textContent = `${name} - ${price}원 x 1`;
-
-    const $buttonWrap = document.createElement("div");
-
-    const $btn_minus = createButtonElement(
-        "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1",
-        "-",
-        id,
-        "-1"
-    );
-
-    const $btn_plus = createButtonElement(
-        "quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1",
-        "+",
-        id,
-        "1"
-    );
-
-    const $btn_remove = createButtonElement(
-        "remove-item bg-red-500 text-white px-2 py-1 rounded",
-        "삭제",
-        id,
-        "remove"
-    );
-
-    $buttonWrap.appendChild($btn_minus);
-    $buttonWrap.appendChild($btn_plus);
-    $buttonWrap.appendChild($btn_remove);
-
-    $itemContainer.appendChild($itemInfo);
-    $itemContainer.appendChild($buttonWrap);
-
+    $itemContainer.innerHTML = htmlContent;
     $cart.appendChild($itemContainer);
 }
 
@@ -90,13 +81,13 @@ const createButtonElement = (className, text, id, changeFunc) => {
 
 //상품 옵션 생성
 function createProductOptions($selectBox) {
-    for (var i = 0; i < products.length; i++) {
-        var $option = document.createElement("option");
+    let optionHtml = "";
 
-        $option.value = products[i].id;
-        $option.textContent = products[i].name + " - " + products[i].price + "원";
-        $selectBox.appendChild($option);
-    }
+    products.forEach((item) => {
+        optionHtml += `<option value="${item.id}">${item.name} - ${item.price}원</option>`;
+    });
+
+    $selectBox.innerHTML = optionHtml;
 }
 
 //할인율 계산
@@ -129,14 +120,11 @@ function applyAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOrigina
 function displayCartResult(result) {
     const { discountRate, finalPrice } = result;
 
-    $cartTotal.textContent = "총액: " + Math.round(finalPrice) + "원";
+    let htmlContent = `총액: ${Math.round(finalPrice)}원`;
 
-    if (discountRate > 0) {
-        var $span = document.createElement("span");
-        $span.className = "text-green-500 ml-2";
-        $span.textContent = "(" + (discountRate * 100).toFixed(1) + "% 할인 적용)";
-        $cartTotal.appendChild($span);
-    }
+    discountRate > 0 &&
+        (htmlContent += `<span class="text-green-500 ml-2"> (${(discountRate * 100).toFixed(1)}% 할인 적용)</span>`);
+    $cartTotal.innerHTML = htmlContent;
 }
 
 //장바구니에 담긴 상품 계산
@@ -190,8 +178,8 @@ function addCartItem() {
     var targetProduct = products.find((product) => product.id === selectedValue);
 
     if (targetProduct) {
-        const cartItem = document.getElementById(targetProduct.id);
-        cartItem ? displayItemQuantity(cartItem, targetProduct) : createCartItemElements(targetProduct);
+        const $cartItem = document.getElementById(targetProduct.id);
+        $cartItem ? displayItemQuantity($cartItem, targetProduct) : createCartItemElements(targetProduct);
         updateCart();
     }
 }
