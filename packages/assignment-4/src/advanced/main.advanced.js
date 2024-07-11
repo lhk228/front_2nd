@@ -1,6 +1,7 @@
 import { render } from "./createCartView";
 import { PRODUCTS } from "./data";
 import { createShoppingCart } from "./createShoppingCart";
+
 const { updateQuantity } = createShoppingCart();
 
 //장바구니 상품별 버튼 클릭

@@ -5,6 +5,7 @@ const products = [
     { id: "p3", name: "상품3", price: 30000 },
 ];
 
+//** element 생성  **/
 //전역 참조 elements
 const { $cart, $cartTotal, $selectBox, $addButton } = createCartBaseElements();
 
@@ -36,13 +37,9 @@ function createCartBaseElements() {
 
 //상품 옵션 생성
 function createProductOptions($selectBox) {
-    let optionHtml = "";
-
-    products.forEach((item) => {
-        optionHtml += `<option value="${item.id}">${item.name} - ${item.price}원</option>`;
-    });
-
-    $selectBox.innerHTML = optionHtml;
+    $selectBox.innerHTML = products
+        .map((item) => `<option value="${item.id}">${item.name} - ${item.price}원</option>`)
+        .join("");
 }
 
 //장바구니 목록 생성
@@ -82,6 +79,7 @@ function createCartItemElements(item) {
     $cart.appendChild($itemContainer);
 }
 
+//** 데이터 계산 및 추출 로직  **/
 //상품타입별 할인율 반환
 function getDiscountRateByItemType(itemType) {
     switch (itemType) {
@@ -139,6 +137,8 @@ function applyAdditionalDiscount(totalQuantity, totalDiscountPrice, totalOrigina
     return { discountRate, finalPrice };
 }
 
+//** 화면 출력 로직  **/
+
 //상품 수량 표시
 function displayItemQuantity(targetElement, targetProduct) {
     const { name, price } = targetProduct;
@@ -157,6 +157,7 @@ function displayCartResult(result) {
     $cartTotal.innerHTML = htmlContent;
 }
 
+//** 화면 수정 로직  **/
 //장바구니에 상품 추가
 function addCartItem() {
     var selectedValue = $selectBox.value;
