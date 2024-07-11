@@ -1,7 +1,6 @@
 import { createShoppingCart } from "./createShoppingCart";
-import { numComma } from "./utils";
 import { CartTotal, CartItem, ProductOption, MainLayout } from "./templates";
-
+import { PRODUCTS } from "./data";
 //뷰 렌더링
 const render = {
     //장바구니 뷰 생성
@@ -27,15 +26,15 @@ const render = {
         const $target = document.querySelector(`#${productId}`);
 
         $target
-            ? ($target.querySelector(".product-info").textContent = `${name} - ${numComma(price)}원 x ${numComma(
-                  quantity
-              )}`)
+            ? ($target.querySelector(".product-info").textContent = `${name} - ${price}원 x ${quantity}`)
             : this.addItem(productId, quantity);
 
         //합계 렌더링
         const html = CartTotal(getTotal());
         const $cartTotal = document.querySelector(`#cart-total`);
         $cartTotal.innerHTML = html;
+
+        console.log("PRODUCTS :", PRODUCTS);
     },
 
     //상품 추가
