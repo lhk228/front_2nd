@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { CartPage } from './components/CartPage.tsx';
 import { AdminPage } from './components/AdminPage.tsx';
 import { Coupon, Product } from '../types.ts';
-
 const initialProducts: Product[] = [
   {
     id: 'p1',
     name: '상품1',
     price: 10000,
     stock: 20,
-    discounts: [{ quantity: 10, rate: 0.1 }, { quantity: 20, rate: 0.2 }]
+    discounts: [
+      { quantity: 10, rate: 0.1 },
+      { quantity: 20, rate: 0.2 }
+    ]
   },
   {
     id: 'p2',
@@ -48,17 +50,15 @@ const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const handleProductUpdate = (updatedProduct: Product) => {
-    setProducts(prevProducts =>
-      prevProducts.map(p => p.id === updatedProduct.id ? updatedProduct : p)
-    );
+    setProducts((prevProducts) => prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
   };
 
   const handleProductAdd = (newProduct: Product) => {
-    setProducts(prevProducts => [...prevProducts, newProduct]);
+    setProducts((prevProducts) => [...prevProducts, newProduct]);
   };
 
   const handleCouponAdd = (newCoupon: Coupon) => {
-    setCoupons(prevCoupons => [...prevCoupons, newCoupon]);
+    setCoupons((prevCoupons) => [...prevCoupons, newCoupon]);
   };
 
   return (
@@ -84,7 +84,7 @@ const App = () => {
             onCouponAdd={handleCouponAdd}
           />
         ) : (
-          <CartPage products={products} coupons={coupons}/>
+          <CartPage products={products} coupons={coupons} />
         )}
       </main>
     </div>
