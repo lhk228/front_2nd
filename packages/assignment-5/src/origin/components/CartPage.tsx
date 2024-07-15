@@ -15,11 +15,14 @@ export const CartPage = ({ products, coupons }: Props) => {
     if (remainingStock <= 0) return;
 
     setCart((prevCart) => {
+      console.log('prevCart :', prevCart);
       const existingItem = prevCart.find((item) => item.product.id === product.id);
       if (existingItem) {
-        return prevCart.map((item) =>
+        const r = prevCart.map((item) =>
           item.product.id === product.id ? { ...item, quantity: Math.min(item.quantity + 1, product.stock) } : item
         );
+        console.log('r :', r);
+        return r;
       }
       return [...prevCart, { product, quantity: 1 }];
     });
