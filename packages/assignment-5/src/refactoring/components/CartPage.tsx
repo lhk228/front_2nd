@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react';
 import { CartItem, Coupon, Product } from '../../types.ts';
 import { useCart } from '../hooks';
 
@@ -30,6 +31,30 @@ export const CartPage = ({ products, coupons }: Props) => {
       }
     }
     return appliedDiscount;
+  };
+
+  const handleClickAdd = (remainingStock: number, product: Product) => {
+    if (remainingStock <= 0) return;
+
+    addToCart(product);
+  };
+
+  const handleClickRemove = (item: CartItem) => {
+    removeFromCart(item.product.id);
+  };
+
+  const handleClickUpdateQuantity = (item: CartItem, action: 'increase' | 'decrease') => {
+    if (action === 'increase') {
+      updateQuantity(item.product.id, item.quantity + 1);
+    } else if (action === 'decrease') {
+      updateQuantity(item.product.id, item.quantity - 1);
+    }
+  };
+
+  const handleChangeCoupon = (event: ChangeEvent) => {
+    const target = event.target as HTMLInputElement;
+
+    applyCoupon(coupons[parseInt(target.value)]);
   };
 
   return (
@@ -67,7 +92,7 @@ export const CartPage = ({ products, coupons }: Props) => {
                     </ul>
                   )}
                   <button
-                    onClick={() => addToCart(product)}
+                    onClick={() => handleClickAdd(remainingStock, product)}
                     className={`w-full px-3 py-1 rounded ${
                       remainingStock > 0
                         ? 'bg-blue-500 text-white hover:bg-blue-600'
@@ -102,19 +127,19 @@ export const CartPage = ({ products, coupons }: Props) => {
                   </div>
                   <div>
                     <button
-                      onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                      onClick={() => handleClickUpdateQuantity(item, 'decrease')}
                       className="bg-gray-300 text-gray-800 px-2 py-1 rounded mr-1 hover:bg-gray-400"
                     >
                       -
                     </button>
                     <button
-                      onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                      onClick={() => handleClickUpdateQuantity(item, 'increase')}
                       className="bg-gray-300 text-gray-800 px-2 py-1 rounded mr-1 hover:bg-gray-400"
                     >
                       +
                     </button>
                     <button
-                      onClick={() => removeFromCart(item.product.id)}
+                      onClick={() => handleClickRemove(item)}
                       className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                     >
                       삭제
@@ -127,10 +152,7 @@ export const CartPage = ({ products, coupons }: Props) => {
 
           <div className="mt-6 bg-white p-4 rounded shadow">
             <h2 className="text-2xl font-semibold mb-2">쿠폰 적용</h2>
-            <select
-              onChange={(e) => applyCoupon(coupons[parseInt(e.target.value)])}
-              className="w-full p-2 border rounded mb-2"
-            >
+            <select onChange={handleChangeCoupon} className="w-full p-2 border rounded mb-2">
               <option value="">쿠폰 선택</option>
               {coupons.map((coupon, index) => (
                 <option key={coupon.code} value={index}>
