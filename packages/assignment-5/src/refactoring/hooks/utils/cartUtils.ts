@@ -16,27 +16,28 @@ export const getMaxApplicableDiscount = (item: CartItem) => {
 };
 
 export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
-  // FIXME: reduce를 두 번 쓰는 게 좋은 걸까?
-  const totalBeforeDiscount = cart.reduce((acc, { product, quantity }) => (acc += product.price * quantity), 0);
+  const { totalBeforeDiscount, totalAfterDiscount } = cart.reduce(
+    (acc, { product, quantity }) => {
+      const itemTotal = product.price * quantity;
+      acc.totalBeforeDiscount += itemTotal;
+      acc.totalAfterDiscount += calculateItemTotal({ product, quantity });
+      return acc;
+    },
+    { totalBeforeDiscount: 0, totalAfterDiscount: 0 }
+  );
 
-  // FIXME: let 안 쓰는 방법이 있을까?..
-  let totalAfterDiscount = cart.reduce((acc, cartItem) => (acc += calculateItemTotal(cartItem)), 0);
+  const discountedTotal = selectedCoupon
+    ? selectedCoupon.discountType === 'amount'
+      ? Math.max(0, totalAfterDiscount - selectedCoupon.discountValue)
+      : totalAfterDiscount * (1 - selectedCoupon.discountValue / 100)
+    : totalAfterDiscount;
 
-  // 쿠폰 적용
-  if (selectedCoupon) {
-    if (selectedCoupon.discountType === 'amount') {
-      totalAfterDiscount = Math.max(0, totalAfterDiscount - selectedCoupon.discountValue);
-    } else {
-      totalAfterDiscount *= 1 - selectedCoupon.discountValue / 100;
-    }
-  }
-
-  const totalDiscount = totalBeforeDiscount - totalAfterDiscount;
+  const totalDiscount = totalBeforeDiscount - discountedTotal;
 
   return {
-    totalBeforeDiscount: Math.round(totalBeforeDiscount),
-    totalAfterDiscount: Math.round(totalAfterDiscount),
-    totalDiscount: Math.round(totalDiscount)
+    totalBeforeDiscount,
+    totalAfterDiscount: discountedTotal,
+    totalDiscount
   };
 };
 export const updateCartItemQuantity = (cart: CartItem[], productId: string, newQuantity: number): CartItem[] => {
