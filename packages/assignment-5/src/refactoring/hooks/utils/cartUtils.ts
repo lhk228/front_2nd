@@ -1,86 +1,53 @@
-import { CartItem, Coupon, Product } from '../../../types';
-
-  //TODO : 없애야함?
- export const getRemainingStock = (cart: CartItem[], product: Product) => {
-
-    const cartItem = cart.find((item) => item.product.id === product.id); //장바구니에 담긴 상품
-    return product.stock - (cartItem?.quantity || 0); //전체 수량에서 장바구니 수량 을 뺀 나머지
-  };
+import { CartItem, Coupon } from '../../../types';
 
 export const calculateItemTotal = (item: CartItem) => {
-	const { price } = item.product;
-	const { quantity } = item;
-	return price * quantity;
+  const { price } = item.product;
+  const { quantity } = item;
+
+  const discount = getMaxApplicableDiscount(item);
+
+  return price * quantity * (1 - discount);
 };
 
 export const getMaxApplicableDiscount = (item: CartItem) => {
-	const { quantity } = item;
-
-	return item.product.discounts.reduce((maxDiscount, d) => {
-		return quantity >= d.quantity && d.rate > maxDiscount ? d.rate : maxDiscount;
-	}, 0);
+  return item.product.discounts.reduce((maxDiscount, d) => {
+    return item.quantity >= d.quantity && d.rate > maxDiscount ? d.rate : maxDiscount;
+  }, 0);
 };
 
-export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null): { totalBeforeDiscount: number; totalAfterDiscount: number; totalDiscount: number } => {
-	let totalBeforeDiscount = 0;
-	let totalAfterDiscount = 0;
+export const calculateCartTotal = (cart: CartItem[], selectedCoupon: Coupon | null) => {
+  // FIXME: reduce를 두 번 쓰는 게 좋은 걸까?
+  const totalBeforeDiscount = cart.reduce((acc, { product, quantity }) => (acc += product.price * quantity), 0);
 
-	cart.forEach((item) => {
-		const { price } = item.product;
-		const { quantity } = item;
+  // FIXME: let 안 쓰는 방법이 있을까?..
+  let totalAfterDiscount = cart.reduce((acc, cartItem) => (acc += calculateItemTotal(cartItem)), 0);
 
-		totalBeforeDiscount += calculateItemTotal(item);
-		
-		const discount = getMaxApplicableDiscount(item)
+  // 쿠폰 적용
+  if (selectedCoupon) {
+    if (selectedCoupon.discountType === 'amount') {
+      totalAfterDiscount = Math.max(0, totalAfterDiscount - selectedCoupon.discountValue);
+    } else {
+      totalAfterDiscount *= 1 - selectedCoupon.discountValue / 100;
+    }
+  }
 
-		totalAfterDiscount += price * quantity * (1 - discount);
-	});
+  const totalDiscount = totalBeforeDiscount - totalAfterDiscount;
 
-	
-	let totalDiscount = totalBeforeDiscount - totalAfterDiscount;
-
-	// 쿠폰 적용
-	if (selectedCoupon) {
-		if (selectedCoupon.discountType === 'amount') {
-			totalAfterDiscount = Math.max(0, totalAfterDiscount - selectedCoupon.discountValue);
-		} else {
-			totalAfterDiscount *= 1 - selectedCoupon.discountValue / 100;
-		}
-		totalDiscount = totalBeforeDiscount - totalAfterDiscount;
-	}
-
-	return {
-		totalBeforeDiscount: Math.round(totalBeforeDiscount),
-		totalAfterDiscount: Math.round(totalAfterDiscount),
-		totalDiscount: Math.round(totalDiscount)
-	};
+  return {
+    totalBeforeDiscount: Math.round(totalBeforeDiscount),
+    totalAfterDiscount: Math.round(totalAfterDiscount),
+    totalDiscount: Math.round(totalDiscount)
+  };
 };
-
 export const updateCartItemQuantity = (cart: CartItem[], productId: string, newQuantity: number): CartItem[] => {
-	const result = cart.map((item) => {
-		if (item.product.id === productId) {
-			const maxQuantity = item.product.stock;
-			const updatedQuantity = Math.max(0, Math.min(newQuantity, maxQuantity));
-			return updatedQuantity > 0 ? { ...item, quantity: updatedQuantity } : null;
-		}
-		return item;
-	})
-	.filter((item): item is CartItem => item !== null);
-	return result
-};
-
-export const getAppliedDiscount = (item: CartItem) => {
-	const { discounts } = item.product;
-	const { quantity } = item;
-	let appliedDiscount = 0;
-	for (const discount of discounts) {
-		if (quantity >= discount.quantity) {
-			appliedDiscount = Math.max(appliedDiscount, discount.rate);
-		}
-	}
-	return appliedDiscount;
-};
-
-export const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
-	return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
+  return cart
+    .map((item) => {
+      if (item.product.id === productId) {
+        const maxQuantity = item.product.stock;
+        const updatedQuantity = Math.max(0, Math.min(newQuantity, maxQuantity));
+        return updatedQuantity > 0 ? { ...item, quantity: updatedQuantity } : null;
+      }
+      return item;
+    })
+    .filter((item): item is CartItem => item !== null);
 };
