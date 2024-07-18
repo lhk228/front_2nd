@@ -4,8 +4,8 @@ import { CartItem, Coupon, Product } from '../../types';
 import { calculateCartTotal, updateCartItemQuantity } from '../utils/cartUtils';
 
 export const useCart = () => {
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const { cart, addToCart } = useCartStore();
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -20,9 +20,10 @@ export const useCart = () => {
   };
 
   const removeFromCart = (productId: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.product.id !== productId));
+    setCart((prevCart) => {
+      return prevCart.filter((item) => item.product.id !== productId);
+    });
   };
-
   const updateQuantity = (productId: string, newQuantity: number) => {
     setCart((prevCart) => updateCartItemQuantity(prevCart, productId, newQuantity));
   };

@@ -5,6 +5,7 @@ interface CartItemListProps {
   cart: CartItem[];
 }
 export const CartItemList = ({ cart }: CartItemListProps) => {
+  console.log('cart22222 ', cart);
   //*Hooks
   const { removeFromCart, updateQuantity } = useCart();
 
