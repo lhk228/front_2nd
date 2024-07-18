@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import type { useEditProduct } from "../../hooks"
+import type { useEditProduct } from '../../hooks';
 import type { Product } from '../../../types.ts';
 
 type EditProductForm = Omit<ReturnType<typeof useEditProduct>, 'edit'> & {
@@ -8,12 +8,7 @@ type EditProductForm = Omit<ReturnType<typeof useEditProduct>, 'edit'> & {
   children?: ReactElement;
 };
 
-export const EditProductForm = ({
-  editingProduct,
-  editProperty,
-  submit,
-  children,
-}: EditProductForm) => {
+export const EditProductForm = ({ editingProduct, editProperty, submit, children }: EditProductForm) => {
   return (
     <div>
       <div className="mb-4">
@@ -44,10 +39,7 @@ export const EditProductForm = ({
         />
       </div>
       {children}
-      <button
-        onClick={submit}
-        className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mt-2"
-      >
+      <button onClick={submit} className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mt-2">
         수정 완료
       </button>
     </div>

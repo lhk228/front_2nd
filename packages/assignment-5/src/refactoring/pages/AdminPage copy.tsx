@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Coupon, Discount, Product } from '../../types.ts';
-import { NewProductForm } from "../components/admin"
-
+import { NewProductForm } from '../components/admin';
 interface Props {
   products: Product[];
   coupons: Coupon[];
@@ -107,8 +106,6 @@ export const AdminPage = ({ products, coupons, onProductUpdate, onProductAdd, on
     });
   };
 
-
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">관리자 페이지</h1>
@@ -121,7 +118,7 @@ export const AdminPage = ({ products, coupons, onProductUpdate, onProductAdd, on
           >
             {showNewProductForm ? '취소' : '새 상품 추가'}
           </button>
-          {showNewProductForm && (<NewProductForm onProductAdd={onProductAdd}/>)}
+          {showNewProductForm && <NewProductForm onProductAdd={onProductAdd} />}
           <div className="space-y-2">
             {products.map((product, index) => (
               <div key={product.id} data-testid={`product-${index + 1}`} className="bg-white p-4 rounded shadow">

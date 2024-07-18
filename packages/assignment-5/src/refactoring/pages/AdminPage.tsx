@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Coupon, Discount, Product } from '../../types.ts';
-import { NewProductForm, ManagementProductList } from "../components/admin"
-
+import { Coupon, Product } from '../../types.ts';
+import { NewProductForm, ManagementProductList } from '../components/admin';
 interface Props {
   products: Product[];
   coupons: Coupon[];
@@ -11,6 +10,7 @@ interface Props {
 }
 
 export const AdminPage = ({ products, coupons, onProductUpdate, onProductAdd, onCouponAdd }: Props) => {
+  //*State
   const [newCoupon, setNewCoupon] = useState<Coupon>({
     name: '',
     code: '',
@@ -19,8 +19,7 @@ export const AdminPage = ({ products, coupons, onProductUpdate, onProductAdd, on
   });
   const [showNewProductForm, setShowNewProductForm] = useState(false);
 
-
-
+  //*Event Handler
   const handleAddCoupon = () => {
     onCouponAdd(newCoupon);
     setNewCoupon({
@@ -30,7 +29,6 @@ export const AdminPage = ({ products, coupons, onProductUpdate, onProductAdd, on
       discountValue: 0
     });
   };
-
 
   return (
     <div className="container mx-auto p-4">
@@ -44,8 +42,8 @@ export const AdminPage = ({ products, coupons, onProductUpdate, onProductAdd, on
           >
             {showNewProductForm ? '취소' : '새 상품 추가'}
           </button>
-          {showNewProductForm && (<NewProductForm onProductAdd={onProductAdd}/>)}
-					<ManagementProductList products={products} onProductUpdate={onProductUpdate}/>
+          {showNewProductForm && <NewProductForm onProductAdd={onProductAdd} />}
+          <ManagementProductList products={products} onProductUpdate={onProductUpdate} />
         </div>
         <div>
           <h2 className="text-2xl font-semibold mb-4">쿠폰 관리</h2>
