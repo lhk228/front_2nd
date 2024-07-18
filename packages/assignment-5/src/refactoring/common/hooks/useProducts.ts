@@ -9,6 +9,8 @@ export function useProducts() {
   };
 
   const updateProduct = (id: string, updatedProduct: Product) => {
+    console.log('id', id);
+    console.log('updatedProduct', updatedProduct);
     setProducts((prevProducts) => prevProducts.map((p) => (p.id === id ? updatedProduct : p)));
   };
 
