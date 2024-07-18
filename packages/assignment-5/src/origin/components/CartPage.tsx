@@ -115,6 +115,7 @@ export const CartPage = ({ products, coupons }: Props) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h2 className="text-2xl font-semibold mb-4">상품 목록</h2>
+					
           <div className="space-y-2">
             {products.map((product) => {
               const remainingStock = getRemainingStock(product);
