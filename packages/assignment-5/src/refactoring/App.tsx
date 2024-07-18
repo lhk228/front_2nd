@@ -48,7 +48,6 @@ const initialCoupons: Coupon[] = [
 ];
 
 const App = () => {
-  // TODO: Navbar 메뉴 확장성 고려해 변경해보기..
   const [isAdmin, setIsAdmin] = useState(false);
   const [products, setProducts] = useLocalStorage<Product[]>('products', []);
   const [coupons, setCoupons] = useLocalStorage<Coupon[]>('coupons', []);
