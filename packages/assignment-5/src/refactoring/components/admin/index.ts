@@ -1,3 +1,4 @@
-import { NewProductForm } from "./NewProductForm"
+export * from "./NewProductForm"
+export * from "./ManagementProductList"
+export * from "./EditProductForm"
 
-export { NewProductForm }

@@ -11,8 +11,6 @@ interface NewProductForm {
 
 export const  NewProductForm = ({onProductAdd}:Props) => {
 	const { newProduct, editProperty, submit } = useProductForm(onProductAdd);
-
-
 	return (
     <div className="bg-white p-4 rounded shadow mb-4">
       <h3 className="text-xl font-semibold mb-2">새 상품 추가</h3>
