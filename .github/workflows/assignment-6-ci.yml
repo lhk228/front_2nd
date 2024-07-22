@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: job1 구현
         run: npm run build
+        working-directory: packages/assignment-6
 
   lint:
     runs-on: ubuntu-latest
