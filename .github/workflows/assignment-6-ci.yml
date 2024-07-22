@@ -28,13 +28,18 @@ jobs:
         working-directory: packages/assignment-6
 
       - name: job1 구현
-        run: pnpm run build || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
+        run: |
+          set -e
+          if ! pnpm run build; then
+            echo "TypeScript build failed" > $(pwd)/packages/assignment-6/tsc_error.txt
+            exit 1
+          fi
         working-directory: packages/assignment-6
 
       - name: 빌드 에러 세팅
         id: check_build_error
         run: |
-          if [ -f packages/assignment-6/tsc_error.txt ]; then
+          if [ -f $(pwd)/packages/assignment-6/tsc_error.txt ]; then
             echo "::set-output name=build_error::true"
           else
             echo "::set-output name=build_error::false"
