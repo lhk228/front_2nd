@@ -8,12 +8,10 @@ on:
   push:
     branches: [develop]
 jobs:
-
-
   build:
     runs-on: ubuntu-latest
     steps:
-  - name: Checkout code
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: List root files
@@ -30,7 +28,7 @@ jobs:
 
       - name: job1 구현
         run: npm run build
-        working-directory: packages/assignment-6
+        # working-directory: packages/assignment-6
 
   lint:
     runs-on: ubuntu-latest
