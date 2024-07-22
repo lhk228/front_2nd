@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: job1 구현
-        run: npm run tsc
-      working-directory: ./packages/assignment-6
+        run: npm run build
 
   lint:
     runs-on: ubuntu-latest
