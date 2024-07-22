@@ -5,7 +5,8 @@ on:
     types: [opened, synchronize, reopened]
     # paths:
     #   - 'packages/assignment-6/**'
-
+  push:
+    branches: [develop]
 jobs:
   build:
     runs-on: ubuntu-latest
