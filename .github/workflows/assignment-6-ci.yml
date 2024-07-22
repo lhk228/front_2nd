@@ -21,31 +21,32 @@ jobs:
         run: ls -R packages/assignment-6
 
       - name: job1 구현
-        run: npm run build || echo "TypeScript build failed" > tsc_error.txt
+        run: npm run build || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
         working-directory: packages/assignment-6
 
       - name: 빌드 에러 세팅
-            run: |
-              if [ -f packages/assignment-6/tsc_error.txt ]; then
-                echo "::set-output name=build_error::true"
-              else
-                echo "::set-output name=build_error::false"
-              fi
+        id: check_build_error
+        run: |
+          if [ -f packages/assignment-6/tsc_error.txt ]; then
+            echo "::set-output name=build_error::true"
+          else
+            echo "::set-output name=build_error::false"
+          fi
 
       - name: 빌드 에러시 PR 코멘트
-              if: steps.check_build_error.outputs.build_error == 'true'
-              uses: actions/github-script@v4
-              with:
-                github-token: ${{ secrets.GITHUB_TOKEN }}
-                script: |
-                  const fs = require('fs');
-                  const tscErrors = fs.readFileSync('packages/assignment-6/tsc_error.txt', 'utf8');
-                  github.issues.createComment({
-                    issue_number: context.payload.pull_request.number,
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    body: `TypeScript build failed:\n\n\`\`\`\n${tscErrors}\n\`\`\``
-                  });
+        if: steps.check_build_error.outputs.build_error == 'true'
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const tscErrors = fs.readFileSync('packages/assignment-6/tsc_error.txt', 'utf8');
+            github.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `TypeScript build failed:\n\n\`\`\`\n${tscErrors}\n\`\`\``
+            });
 
   lint:
     runs-on: ubuntu-latest
