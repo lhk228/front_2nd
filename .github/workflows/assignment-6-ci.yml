@@ -8,6 +8,21 @@ on:
   push:
     branches: [develop]
 jobs:
+  - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: List root files
+        run: ls -R
+        # 루트 디렉토리 구조 출력
+
+      - name: List packages files
+        run: ls -R packages
+        # `packages` 디렉토리 및 하위 디렉토리 구조 출력
+
+      - name: List assignment-6 files
+        run: ls -R packages/assignment-6
+        # `packages/assignment-6` 디렉토리의 파일 리스트 출력
+
   build:
     runs-on: ubuntu-latest
     steps:
