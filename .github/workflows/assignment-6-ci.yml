@@ -31,21 +31,21 @@ jobs:
         run: |
           set -e
           if ! pnpm run build; then
-            echo "TypeScript build failed" > $(pwd)/packages/assignment-6/tsc_error.txt
+            echo "TypeScript build failed" > tsc_error.txt
             exit 1
           fi
         working-directory: packages/assignment-6
 
-      - name: 빌드 에러 세팅
+      - name: Check for build errors
         id: check_build_error
         run: |
-          if [ -f $(pwd)/packages/assignment-6/tsc_error.txt ]; then
+          if [ -f packages/assignment-6/tsc_error.txt ]; then
             echo "::set-output name=build_error::true"
           else
             echo "::set-output name=build_error::false"
           fi
 
-      - name: 빌드 에러시 PR 코멘트
+      - name: Comment on PR if build fails
         if: steps.check_build_error.outputs.build_error == 'true'
         uses: actions/github-script@v4
         with:
