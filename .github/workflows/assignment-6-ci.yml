@@ -27,10 +27,6 @@ jobs:
         run: pnpm install
         working-directory: packages/assignment-6
 
-      - name: Run build
-        run: pnpm run build || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
-        working-directory: packages/assignment-6
-
       - name: tsc 실행
         id: run_tsc
         run: |
