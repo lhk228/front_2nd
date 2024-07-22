@@ -25,7 +25,6 @@ jobs:
         working-directory: packages/assignment-6
 
       - name: 빌드 에러 세팅
-            id: check_build_error
             run: |
               if [ -f packages/assignment-6/tsc_error.txt ]; then
                 echo "::set-output name=build_error::true"
