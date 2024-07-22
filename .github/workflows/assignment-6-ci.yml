@@ -30,6 +30,7 @@ jobs:
                 echo "::set-output name=build_error::true"
               else
                 echo "::set-output name=build_error::false"
+              fi
 
       - name: 빌드 에러시 PR 코멘트
               if: steps.check_build_error.outputs.build_error == 'true'
