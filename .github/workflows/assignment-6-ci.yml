@@ -31,7 +31,7 @@ jobs:
         run: |
           set -e
           if ! pnpm run build; then
-            echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
+            echo "TypeScript build failed" >tsc_error.txt
           fi
         working-directory: packages/assignment-6
 
