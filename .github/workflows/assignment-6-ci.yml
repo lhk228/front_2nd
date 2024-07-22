@@ -20,18 +20,25 @@ jobs:
       - name: List assignment-6 files
         run: ls -R packages/assignment-6
 
-      - name: 패키지 설치
-        run: npm install
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: packages/assignment-6
+
+      - name: Run build
+        run: pnpm run build || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
         working-directory: packages/assignment-6
 
       - name: tsc 실행
         id: run_tsc
         run: |
-          npm run tsc || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
+          pnpm run tsc || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
         working-directory: packages/assignment-6
 
       - name: job1 구현
-        run: npm run build || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
+        run: pnpm run build || echo "TypeScript build failed" > packages/assignment-6/tsc_error.txt
         working-directory: packages/assignment-6
 
       - name: 빌드 에러 세팅
