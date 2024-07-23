@@ -102,6 +102,47 @@ jobs:
       - name: job3 구현
         run: echo "job3의 내용을 구현해주세요"
 
+      - name: 체크아웃
+        uses: actions/checkout@v2
+
+      - name: pnpm 설치
+        run: npm install -g pnpm
+
+      - name: 의존성 설치
+        run: pnpm install
+        working-directory: packages/assignment-6
+
+      - name: 테스트 실행 및 커버리지 리포트 생성
+        id: test
+        run: |
+          pnpm test --coverage
+          cat coverage/coverage-summary.txt
+        working-directory: packages/assignment-6
+
+      - name: 빌드 오류 및 커버리지 코멘트
+        if: ${{ failure() || success() }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI }}
+          script: |
+            const fs = require('fs');
+            const pull_number = ${{ github.event.pull_request.number }};
+            const coverageReport = fs.existsSync('packages/assignment-6/coverage/coverage-summary.txt') ? fs.readFileSync('packages/assignment-6/coverage/coverage-summary.txt', 'utf-8') : '커버리지 리포트 없음';
+
+            const updated_title = `[테스트 성공] ${{ github.event.pull_request.title }}`;
+
+            // PR에 리뷰 남기기
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pull_number,
+              body: `
+                
+                커버리지 결과:\n\`\`\`\n${coverageReport}\n\`\`\`
+              `,
+              event: 'REQUEST_CHANGES'
+            });
+
   lighthouse:
     runs-on: ubuntu-latest
     steps:
