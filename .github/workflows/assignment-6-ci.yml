@@ -26,7 +26,9 @@ jobs:
         run: echo "job2의 내용을 구현해주세요"
 
       - name: tsc 빌드
-        run: pnpm -F assignment-6 build
+        run: |
+          set -o pipefail
+          pnpm -F assignment-6 build 2>&1 | tee build.log
         working-directory: packages/assignment-6
 
       # 실패시 코멘트 작성
@@ -35,16 +37,21 @@ jobs:
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI  }}
-          script: |
-            const pull_number = ${{ github.event.pull_request.number }}
-            const updated_title = `[BUILD FAIL] ${{ github.event.pull_request.title }}`
+         script: |
+            const fs = require('fs');
+            const pull_number = ${{ github.event.pull_request.number }};
+            const buildLog = fs.readFileSync('packages/assignment-6/build.log', 'utf-8');
+            
+            const updated_title = `[BUILD FAIL] ${{ github.event.pull_request.title }}`;
+            
+            // PR에 리뷰 남기기
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: pull_number,
-              body: 'tsc 빌드에 실패했습니다.',
+              body: `빌드 오류 발생:\n\`\`\`\n${buildLog}\n\`\`\``,
               event: 'REQUEST_CHANGES'
-            })
+            });
   lint:
     runs-on: ubuntu-latest
 
@@ -63,7 +70,9 @@ jobs:
         run: echo "job2의 내용을 구현해주세요"
 
       - name: eslint 실행
-        run: pnpm run lint
+        run: |
+          set -o pipefail
+          pnpm run lint 2>&1 | tee lint.log
         working-directory: packages/assignment-6
 
         # 실패시 코멘트 작성
@@ -73,15 +82,20 @@ jobs:
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI  }}
           script: |
-            const pull_number = ${{ github.event.pull_request.number }}
-            const updated_title = `[ESLINT FAIL] ${{ github.event.pull_request.title }}`
+            const fs = require('fs');
+            const pull_number = ${{ github.event.pull_request.number }};
+            const Log = fs.readFileSync('packages/assignment-6/lint.log', 'utf-8');
+            
+            const updated_title = `[ESLINT FAIL] ${{ github.event.pull_request.title }}`;
+            
+            // PR에 리뷰 남기기
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: pull_number,
-              body: 'eslint 에러가 발생했습니다',
+              body: `ESLINT :\n\`\`\`\n${Log}\n\`\`\``,
               event: 'REQUEST_CHANGES'
-            })
+            });
   test:
     runs-on: ubuntu-latest
     steps:
