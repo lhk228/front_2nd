@@ -29,7 +29,7 @@ jobs:
         run: pnpm -F assignment-6 build
         working-directory: packages/assignment-6
 
-      # 이전 step이 실패한 경우에만 이 step을 실행시키는 syntax
+      # 실패시 코멘트 작성
       - name: 빌드 오류 코멘트
         if: ${{ failure() }}
         uses: actions/github-script@v6
@@ -45,14 +45,6 @@ jobs:
               body: 'tsc 빌드에 실패했습니다.',
               event: 'REQUEST_CHANGES'
             })
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pull_number,
-              title: updated_title,
-              state: 'closed'
-            })
-
   lint:
     runs-on: ubuntu-latest
 
@@ -74,6 +66,22 @@ jobs:
         run: pnpm run lint
         working-directory: packages/assignment-6
 
+        # 실패시 코멘트 작성
+      - name: lint 오류 코멘트
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.TOKEN_FOR_CI  }}
+          script: |
+            const pull_number = ${{ github.event.pull_request.number }}
+            const updated_title = `[ESLINT FAIL] ${{ github.event.pull_request.title }}`
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pull_number,
+              body: 'eslint 에러가 발생했습니다',
+              event: 'REQUEST_CHANGES'
+            })
   test:
     runs-on: ubuntu-latest
     steps:
