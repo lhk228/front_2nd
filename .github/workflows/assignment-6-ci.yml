@@ -13,102 +13,79 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 체크아웃
         uses: actions/checkout@v2
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: packages/assignment-6
-
-      - name: Print working directory
-        run: |
-          echo "Current working directory:"
-          pwd
-
-      - name: List files in root
-        run: |
-          echo "Files in root directory:"
-          ls -al
-
-      - name: List files in assignment-6 directory
-        run: |
-          echo "Files in packages/assignment-6 directory:"
-          ls -al packages/assignment-6
-
-      - name: Check directory structure
-        run: |
-          echo "Directory structure:"
-          tree -L 2
-
-      - name: job1 구현
-        run: |
-          set -e
-          if ! pnpm -F assignment-6 build; then
-            echo "TypeScript build failed" > tsc_error.txt
-          fi
-        working-directory: packages/assignment-6
-
-      - name: 빌드 에러 체크
-        id: check_build_error
-        run: |
-          if [ -f packages/assignment-6/tsc_error.txt ]; then
-            echo "::set-output name=build_error::true"
-          else
-            echo "::set-output name=build_error::false"
-          fi
-
-      - name: 빌드 오류 코멘트
-        if: steps.check_build_error.outputs.build_error == 'true'
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.TOKEN_FOR_CI }}
-          script: |
-            const fs = require('fs');
-            const tscErrors = fs.readFileSync('packages/assignment-6/tsc_error.txt', 'utf8');
-            github.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `TypeScript build failed:\n\n\`\`\`\n${tscErrors}\n\`\`\``
-            });
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: job2 구현
-        run: echo "job2의 내용을 구현해주세요"
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Print working directory
-        run: |
-          echo "Current working directory:"
-          pwd
-
-      - name: List files in root
-        run: |
-          echo "Files in root directory:"
-          ls -al
-
-      - name: List files in assignment-6 directory
-        run: |
-          echo "Files in packages/assignment-6 directory:"
-          ls -al packages/assignment-6
-
-      - name: Check directory structure
-        run: |
-          echo "Directory structure:"
-          tree -L 2
       - name: pnpm 설치
         run: npm install -g pnpm
 
-      - name: 패키지 설치
+      - name: 의존성 설치
         run: pnpm install
         working-directory: packages/assignment-6
+
+      - name: job1 구현
+        run: echo "job2의 내용을 구현해주세요"
+      
+      - name: tsc 빌드
+        run: pnpm -F assignment-6 build
+        working-directory: packages/assignment-6
+
+        # run: |
+        #   set -e
+        #   if ! pnpm -F assignment-6 build; then
+        #     echo "TypeScript build failed" > tsc_error.txt
+        #   fi
+        # working-directory: packages/assignment-6
+
+        # - name: 빌드 에러 체크
+        #   id: check_build_error
+        #   run: |
+        #     if [ -f packages/assignment-6/tsc_error.txt ]; then
+        #       echo "::set-output name=build_error::true"
+        #     else
+        #       echo "::set-output name=build_error::false"
+        #     fi
+
+        # 이전 step이 실패한 경우에만 이 step을 실행시키는 syntax
+        - name: 빌드 오류 코멘트
+          if: ${{ failure() }}
+          uses: actions/github-script@v6
+          with:
+            github-token: ${{ github.TOKEN_FOR_CI }}
+            script: |
+              const pull_number = ${{ github.event.pull_request.number }}
+              const updated_title = `[BUILD FAIL] ${{ github.event.pull_request.title }}`
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pull_number,
+                body: 'tsc 빌드에 실패했습니다.',
+                event: 'REQUEST_CHANGES'
+              })
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pull_number,
+                title: updated_title,
+                state: 'closed'
+              })
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v2
+
+      - name: pnpm 설치
+        run: npm install -g pnpm
+
+      - name: 의존성 설치
+        run: pnpm install
+        working-directory: packages/assignment-6
+
+      - name: job2 구현
+        run: echo "job2의 내용을 구현해주세요"
 
       - name: eslint 실행
         run: pnpm run lint
