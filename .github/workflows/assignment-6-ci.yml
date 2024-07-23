@@ -3,8 +3,7 @@ name: CI Assignment 6
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    # paths:
-    #   - 'packages/assignment-6/**'
+
   push:
     branches: [develop]
 
@@ -29,22 +28,6 @@ jobs:
       - name: tsc 빌드
         run: pnpm -F assignment-6 build
         working-directory: packages/assignment-6
-
-      # run: |
-      #   set -e
-      #   if ! pnpm -F assignment-6 build; then
-      #     echo "TypeScript build failed" > tsc_error.txt
-      #   fi
-      # working-directory: packages/assignment-6
-
-      # - name: 빌드 에러 체크
-      #   id: check_build_error
-      #   run: |
-      #     if [ -f packages/assignment-6/tsc_error.txt ]; then
-      #       echo "::set-output name=build_error::true"
-      #     else
-      #       echo "::set-output name=build_error::false"
-      #     fi
 
       # 이전 step이 실패한 경우에만 이 step을 실행시키는 syntax
       - name: 빌드 오류 코멘트
