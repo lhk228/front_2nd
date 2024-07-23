@@ -115,7 +115,7 @@ jobs:
       - name: 테스트 실행 및 커버리지 리포트 생성
         id: test
         run: |
-          pnpm test --coverage
+          pnpm test
           cat coverage/coverage-summary.txt
         working-directory: packages/assignment-6
 
