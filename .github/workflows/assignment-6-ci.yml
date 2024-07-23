@@ -60,6 +60,17 @@ jobs:
       - name: job2 구현
         run: echo "job2의 내용을 구현해주세요"
 
+      - name: pnpm 설치
+        run: npm install pnpm
+
+      - name: 패키지 설치
+        run: pnpm install
+        working-directory: packages/assignment-6
+
+      - name: eslint 실행
+        run: pnpm run lint
+        working-directory: packages/assignment-6
+
   test:
     runs-on: ubuntu-latest
     steps:
