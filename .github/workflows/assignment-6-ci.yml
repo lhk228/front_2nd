@@ -23,6 +23,26 @@ jobs:
         run: pnpm install
         working-directory: packages/assignment-6
 
+      - name: Print working directory
+        run: |
+          echo "Current working directory:"
+          pwd
+
+      - name: List files in root
+        run: |
+          echo "Files in root directory:"
+          ls -al
+
+      - name: List files in assignment-6 directory
+        run: |
+          echo "Files in packages/assignment-6 directory:"
+          ls -al packages/assignment-6
+
+      - name: Check directory structure
+        run: |
+          echo "Directory structure:"
+          tree -L 2
+
       - name: job1 구현
         run: |
           set -e
@@ -61,6 +81,25 @@ jobs:
       - name: job2 구현
         run: echo "job2의 내용을 구현해주세요"
 
+      - name: Print working directory
+        run: |
+          echo "Current working directory:"
+          pwd
+
+      - name: List files in root
+        run: |
+          echo "Files in root directory:"
+          ls -al
+
+      - name: List files in assignment-6 directory
+        run: |
+          echo "Files in packages/assignment-6 directory:"
+          ls -al packages/assignment-6
+
+      - name: Check directory structure
+        run: |
+          echo "Directory structure:"
+          tree -L 2
       - name: pnpm 설치
         run: npm install -g pnpm
 
