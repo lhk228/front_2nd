@@ -63,33 +63,34 @@ jobs:
     steps:
       - name: job2 구현
         run: echo "job2의 내용을 구현해주세요"
-    # - name: Run ESLint
-    #     run: pnpm exec eslint . --format json --output-file eslint-report.json
-    #     continue-on-error: true
 
-    #   - name: Check if ESLint report contains errors
-    #     id: eslint-check
-    #     run: |
-    #       if grep -q '"errorCount": 0' eslint-report.json; then
-    #         echo "eslint-errors=false" >> $GITHUB_ENV
-    #       else
-    #         echo "eslint-errors=true" >> $GITHUB_ENV
-    #       fi
+      - name: Run ESLint
+        run: pnpm exec eslint . --format json --output-file eslint-report.json
+        continue-on-error: true
 
-    #   - name: Add a comment to the PR if there are ESLint errors
-    #     if: env.eslint-errors == 'true'
-    #     uses: marocchino/sticky-pull-request-comment@v2
-    #     with:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #       header: ESLint Report
-    #       path: eslint-report.json
+      - name: Check if ESLint report contains errors
+        id: eslint-check
+        run: |
+          if grep -q '"errorCount": 0' eslint-report.json; then
+            echo "eslint-errors=false" >> $GITHUB_ENV
+          else
+            echo "eslint-errors=true" >> $GITHUB_ENV
+          fi
 
-    #   - name: Upload ESLint report
-    #     if: env.eslint-errors == 'true'
-    #     uses: actions/upload-artifact@v3
-    #     with:
-    #       name: eslint-report
-    #       path: eslint-report.json
+      - name: Add a comment to the PR if there are ESLint errors
+        if: env.eslint-errors == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: ESLint Report
+          path: eslint-report.json
+
+      - name: Upload ESLint report
+        if: env.eslint-errors == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: eslint-report
+          path: eslint-report.json
   test:
     runs-on: ubuntu-latest
     steps:
