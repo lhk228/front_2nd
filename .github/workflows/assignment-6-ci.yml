@@ -14,12 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: 디렉토리 구조 확인
-        run: ls -R
-
-      - name: List assignment-6 files
-        run: ls -R packages/assignment-6
-
       - name: Install pnpm
         run: npm install -g pnpm
 
@@ -64,6 +58,13 @@ jobs:
       - name: job2 구현
         run: echo "job2의 내용을 구현해주세요"
 
+        - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: packages/assignment-6
+
       - name: Run ESLint
         run: pnpm exec eslint . --format json --output-file eslint-report.json
         continue-on-error: true
@@ -93,7 +94,7 @@ jobs:
           path: eslint-report.json
   test:
     runs-on: ubuntu-latest
-    steps:
+    steps:                                                                                                                                                                                                                                       0
       - name: job3 구현
         run: echo "job3의 내용을 구현해주세요"
 
