@@ -34,7 +34,7 @@ jobs:
         if: ${{ failure() }}
         uses: actions/github-script@v6
         with:
-          github-token: ${{ github.GITHUB_TOKEN }}
+          github-token: ${{ secrets.TOKEN_FOR_CI  }}
           script: |
             const pull_number = ${{ github.event.pull_request.number }}
             const updated_title = `[BUILD FAIL] ${{ github.event.pull_request.title }}`
