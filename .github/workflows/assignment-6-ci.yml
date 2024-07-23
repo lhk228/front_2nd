@@ -37,13 +37,13 @@ jobs:
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.TOKEN_FOR_CI  }}
-         script: |
+          script: |
             const fs = require('fs');
             const pull_number = ${{ github.event.pull_request.number }};
             const buildLog = fs.readFileSync('packages/assignment-6/build.log', 'utf-8');
-            
+
             const updated_title = `[BUILD FAIL] ${{ github.event.pull_request.title }}`;
-            
+
             // PR에 리뷰 남기기
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
@@ -85,9 +85,9 @@ jobs:
             const fs = require('fs');
             const pull_number = ${{ github.event.pull_request.number }};
             const Log = fs.readFileSync('packages/assignment-6/lint.log', 'utf-8');
-            
+
             const updated_title = `[ESLINT FAIL] ${{ github.event.pull_request.title }}`;
-            
+
             // PR에 리뷰 남기기
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
