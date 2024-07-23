@@ -65,6 +65,7 @@ jobs:
 
       - name: 패키지 설치
         run: pnpm install
+        working-directory: packages/assignment-6
 
       - name: eslint 실행
         run: pnpm run lint
