@@ -11,8 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./packages/assignment-6
 
     steps:
       - name: Checkout code
@@ -23,6 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        working-directory: packages/assignment-6
 
       - name: job1 구현
         run: |
@@ -58,9 +57,6 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./packages/assignment-6
-
     steps:
       - name: job2 구현
         run: echo "job2의 내용을 구현해주세요"
@@ -70,9 +66,11 @@ jobs:
 
       - name: 패키지 설치
         run: pnpm install
+        working-directory: packages/assignment-6
 
       - name: eslint 실행
         run: pnpm run lint
+        working-directory: packages/assignment-6
 
   test:
     runs-on: ubuntu-latest
