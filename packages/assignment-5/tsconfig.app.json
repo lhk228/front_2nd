@@ -21,7 +21,20 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* path */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@admin/*": ["src/refactoring/pages/admin/*"],
+      "@cart/*": ["src/refactoring/pages/cart/*"],
+      "@common/*": ["src/refactoring/common/*"],
+      "@pages/*": ["src/refactoring/pages/*"],
+      "@utils": ["src/refactoring/utils/cartUtils"],
+      "@store": ["src/refactoring/store/*"],
+      "@types": ["src/types.ts"]
+    }
   },
   "include": ["src"]
 }
