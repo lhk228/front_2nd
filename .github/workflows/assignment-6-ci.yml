@@ -1,111 +1,111 @@
 name: CI Assignment 6
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    # paths:
-    #   - 'packages/assignment-6/**'
-  push:
-    branches: [develop]
+	pull_request:
+		types: [opened, synchronize, reopened]
+		# paths:
+		#   - 'packages/assignment-6/**'
+		push:
+		branches: [develop]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+	build:
+		runs-on: ubuntu-latest
+	steps:
+		- name: Checkout code
+		uses: actions/checkout@v2
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+		- name: Install pnpm
+		run: npm install -g pnpm
 
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: packages/assignment-6
+	  - name: Install dependencies
+		run: pnpm install
+		working-directory: packages/assignment-6
 
-      - name: job1 구현
-        run: |
-          set -e
-          if ! pnpm -F assignment-6 build; then
-            echo "TypeScript build failed" > tsc_error.txt
-          fi
-        working-directory: packages/assignment-6
+	  - name: job1 구현
+		run: |
+		  set -e
+		  if ! pnpm -F assignment-6 build; then
+			echo "TypeScript build failed" > tsc_error.txt
+		  fi
+		working-directory: packages/assignment-6
 
-      - name: 빌드 에러 체크
-        id: check_build_error
-        run: |
-          if [ -f packages/assignment-6/tsc_error.txt ]; then
-            echo "::set-output name=build_error::true"
-          else
-            echo "::set-output name=build_error::false"
-          fi
+	  - name: 빌드 에러 체크
+		id: check_build_error
+		run: |
+		  if [ -f packages/assignment-6/tsc_error.txt ]; then
+			echo "::set-output name=build_error::true"
+		  else
+			echo "::set-output name=build_error::false"
+		  fi
 
-      - name: 빌드 오류 코멘트
-        if: steps.check_build_error.outputs.build_error == 'true'
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.TOKEN_FOR_CI }}
-          script: |
-            const fs = require('fs');
-            const tscErrors = fs.readFileSync('packages/assignment-6/tsc_error.txt', 'utf8');
-            github.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `TypeScript build failed:\n\n\`\`\`\n${tscErrors}\n\`\`\``
-            });
+	  - name: 빌드 오류 코멘트
+		if: steps.check_build_error.outputs.build_error == 'true'
+		uses: actions/github-script@v4
+		with:
+		  github-token: ${{ secrets.TOKEN_FOR_CI }}
+		  script: |
+			const fs = require('fs');
+			const tscErrors = fs.readFileSync('packages/assignment-6/tsc_error.txt', 'utf8');
+			github.issues.createComment({
+			  issue_number: context.payload.pull_request.number,
+			  owner: context.repo.owner,
+			  repo: context.repo.repo,
+			  body: `TypeScript build failed:\n\n\`\`\`\n${tscErrors}\n\`\`\``
+			});
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: job2 구현
-        run: echo "job2의 내용을 구현해주세요"
+	runs-on: ubuntu-latest
+	steps:
+	  - name: job2 구현
+		run: echo "job2의 내용을 구현해주세요"
 
-        - name: Install pnpm
-        run: npm install -g pnpm
+	  - name: Install pnpm
+		run: npm install -g pnpm
 
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: packages/assignment-6
+	  - name: Install dependencies
+		run: pnpm install
+		working-directory: packages/assignment-6
 
-      - name: Run ESLint
-        run: pnpm exec eslint . --format json --output-file eslint-report.json
-        continue-on-error: true
+	  - name: Run ESLint
+		run: pnpm exec eslint . --format json --output-file eslint-report.json
+		continue-on-error: true
 
-      - name: Check if ESLint report contains errors
-        id: eslint-check
-        run: |
-          if grep -q '"errorCount": 0' eslint-report.json; then
-            echo "eslint-errors=false" >> $GITHUB_ENV
-          else
-            echo "eslint-errors=true" >> $GITHUB_ENV
-          fi
+	  - name: Check if ESLint report contains errors
+		id: eslint-check
+		run: |
+			if grep -q '"errorCount": 0' eslint-report.json; then
+			echo "eslint-errors=false" >> $GITHUB_ENV
+			else
+			echo "eslint-errors=true" >> $GITHUB_ENV
+		  fi
 
-      - name: Add a comment to the PR if there are ESLint errors
-        if: env.eslint-errors == 'true'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          header: ESLint Report
-          path: eslint-report.json
+	  - name: Add a comment to the PR if there are ESLint errors
+		if: env.eslint-errors == 'true'
+		uses: marocchino/sticky-pull-request-comment@v2
+		with:
+		  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+		  header: ESLint Report
+		  path: eslint-report.json
 
-      - name: Upload ESLint report
-        if: env.eslint-errors == 'true'
-        uses: actions/upload-artifact@v3
-        with:
-          name: eslint-report
-          path: eslint-report.json
+	- name: Upload ESLint report
+		if: env.eslint-errors == 'true'
+		uses: actions/upload-artifact@v3
+		with:
+		name: eslint-report
+		path: eslint-report.json
   test:
-    runs-on: ubuntu-latest
-    steps:                                                                                                                                                                                                                                       0
-      - name: job3 구현
-        run: echo "job3의 내용을 구현해주세요"
+	runs-on: ubuntu-latest
+	steps:                                                                                                                                                                                                                                       0
+	  - name: job3 구현
+		run: echo "job3의 내용을 구현해주세요"
 
   lighthouse:
-    runs-on: ubuntu-latest
-    steps:
-      - name: job4 구현
-        run: echo "job4의 내용을 구현해주세요"
+	runs-on: ubuntu-latest
+	steps:
+	  - name: job4 구현
+		run: echo "job4의 내용을 구현해주세요"
 
   assign_reviewer:
-    runs-on: ubuntu-latest
-    steps:
-      - name: job5 구현
-        run: echo "job5의 내용을 구현해주세요"
+	runs-on: ubuntu-latest
+	steps:
+	  - name: job5 구현
+		run: echo "job5의 내용을 구현해주세요"
