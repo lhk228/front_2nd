@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: 체크아웃
         uses: actions/checkout@v4
+
+      - name: node 세팅
         uses: actions/setup-node@v4
         with:
           node-version: '20'
