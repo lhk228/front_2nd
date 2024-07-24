@@ -11,7 +11,7 @@ on:
 
 defaults:
   run:
-    working-directory: packages/assignment-6
+    working-directory: 'packages/assignment-6/**'
 
 jobs:
   build:
